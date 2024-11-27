@@ -5,6 +5,9 @@
 - [⭐ Inspiration](#-inspiration)
 - [🚀 Goals](#-goals)
 - [📦 Monorepo](#-monorepo)
+  - [🚧 Prerequisites](#-prerequisites)
+    - [Docker](#docker)
+    - [Go](#go)
 
 # 🔔 About
 
@@ -26,18 +29,27 @@ Scrumdinger originally is an iOS [tutorial](https://developer.apple.com/tutorial
 ```text
 
 📦 Scrumdinger
- ┣ 📂deploy
- ┣ 📂ml
- ┣ 📂service
- ┣ 📂web
- ┣ 📂zarf
+ ┣ 📂api
+ ┃ ┣ 📂frontends // All frontend code
+ ┃ ┃ ┣ 📂...
+ ┃ ┣ 📂services // All web service code
+ ┃ ┃ ┣ 📂...
+ ┣ 📂app // web controllers and routes for web services
+ ┃ ┃ ┣ 📂...
+ ┣ 📂business // Business logic 
+ ┃ ┃ ┣ 📂...
+ ┣ 📂foundation // Common Go code for web services
+ ┃ ┃ ┣ 📂...
+ ┣ 📂zarf // Deployment files
 
 ```
 
-| directory | description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| deploy    | contains the helm charts required to deploy Scrumdinger to Kubernetes |
-| ml        | contains the code required for transcribing recorded meetings         |
-| service   | contains the Go service exposing the OpenAPI REST API                 |
-| web       | contains all frontend web code                                        |
-| zarf      | contains all build files and scripts                                  |
+## 🚧 Prerequisites
+
+### Docker
+
+I recommend installing docker in [rootless mode](https://docs.docker.com/engine/security/rootless/).
+
+### Go
+
+[Download](https://go.dev/dl/) and follow these install [instructions](https://go.dev/doc/install#install).
