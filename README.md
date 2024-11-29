@@ -8,6 +8,9 @@
   - [🚧 Prerequisites](#-prerequisites)
     - [Docker](#docker)
     - [Go](#go)
+    - [Node](#node)
+- [🔬 Environments](#-environments)
+  - [Development](#development)
 
 # 🔔 About
 
@@ -48,8 +51,21 @@ Scrumdinger originally is an iOS [tutorial](https://developer.apple.com/tutorial
 
 ### Docker
 
-I recommend installing docker in [rootless mode](https://docs.docker.com/engine/security/rootless/).
+I recommend installing docker in [rootless mode](https://docs.docker.com/engine/security/rootless/). Also install [docker compose](https://docs.docker.com/compose/install/).
 
 ### Go
 
 [Download](https://go.dev/dl/) and follow these install [instructions](https://go.dev/doc/install#install).
+
+### Node
+
+Download [nvm](https://nodejs.org/en/download/package-manager) and follow the instructions to install.
+
+
+# 🔬 Environments
+
+## Development
+
+Run `make build` and `make compose-up`
+
+Navigate to the [web app](api/frontends/scrumdinger) and run `npm install && npm run dev`. The test email is `admin@example.com` and the password is `gophers`.
