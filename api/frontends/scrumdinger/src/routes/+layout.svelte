@@ -46,11 +46,10 @@
 				</AppRailTile>
 				<!-- --- -->
 				<svelte:fragment slot="trail">
-					<AppRailAnchor href="/"  title="Account">
+					<AppRailAnchor href="/" title="Account">
 						<div class="flex justify-center"><CircleUser /></div>
 					</AppRailAnchor>
 				</svelte:fragment>
-
 			</AppRail>
 		</aside>
 		<!-- Main Content -->
