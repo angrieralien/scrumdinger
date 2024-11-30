@@ -1,10 +1,7 @@
 <script>
-	import ScrumTimer from '$lib/components/ScrumTimer.svelte';
-
-	let countdown = 30;
-	let attendees = 3;
+	import ScrumMeeting from '$lib/components/ScrumMeeting.svelte';
 </script>
 
 <div class="flex justify-center items-center h-full">
-	<ScrumTimer {countdown} {attendees} />
+	<ScrumMeeting></ScrumMeeting>
 </div>
