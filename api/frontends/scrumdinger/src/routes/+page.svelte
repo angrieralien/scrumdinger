@@ -1,5 +1,5 @@
 <script>
-	import ScrumTimer from '../components/ScrumTimer.svelte';
+	import ScrumTimer from '$lib/components/ScrumTimer.svelte';
 
 	let countdown = 30;
 	let attendees = 3;

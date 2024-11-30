@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { BellRing } from 'lucide-svelte';
-	import { userAPI } from '../../api/userapi';
+	import { userAPI } from '$lib/api/userapi';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { user } from '../../models/user';
+	import { getUserContext, User } from '$lib/models/user.svelte';
+	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
+	let user: User;
 	let email: string = $state('admin@example.com');
 	let password: string = $state('gophers');
 	let t: ToastSettings = {
@@ -14,7 +16,13 @@
 		timeout: 10000
 	};
 
-	onMount(() => {});
+	onMount(() => {
+		user = getUserContext();
+	});
+
+	/**
+	 * submit sends login request to User api.
+	 */
 	function submit() {
 		userAPI
 			.login(email, password)
@@ -22,7 +30,7 @@
 				let token = data['token'];
 				localStorage.setItem('token', token);
 				user.isLoggedIn = true;
-				window.location.href = '/';
+				goto('/home');
 			})
 			.catch((reason: any) => {
 				t.message = reason['message'];
@@ -31,20 +39,18 @@
 	}
 </script>
 
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+<div class="flex min-h-full flex-col justify-center px-6 lg:px-8">
 	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
 		<div class="flex justify-center">
 			<BellRing />
 		</div>
-		<h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-			Sign in to your account
-		</h2>
+		<h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight">Sign in to your account</h2>
 	</div>
 
 	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
 		<form class="space-y-6" onsubmit={submit}>
 			<div>
-				<label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
+				<label for="email" class="block text-sm/6 font-medium">Email address</label>
 				<div class="mt-2">
 					<input
 						id="email"
@@ -60,7 +66,7 @@
 
 			<div>
 				<div class="flex items-center justify-between">
-					<label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
+					<label for="password" class="block text-sm/6 font-medium">Password</label>
 					<div class="text-sm">
 						<a href="#" class="font-semibold text-primary-600 hover:text-primary-500"
 							>Forgot password?</a
