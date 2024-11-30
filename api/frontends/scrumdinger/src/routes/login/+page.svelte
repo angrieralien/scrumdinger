@@ -30,7 +30,7 @@
 				let token = data['token'];
 				localStorage.setItem('token', token);
 				user.isLoggedIn = true;
-				goto('/home');
+				goto('/');
 			})
 			.catch((reason: any) => {
 				t.message = reason['message'];

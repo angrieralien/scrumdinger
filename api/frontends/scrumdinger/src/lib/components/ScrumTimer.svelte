@@ -3,7 +3,7 @@
 	import { tweened } from 'svelte/motion';
 	import { linear as easing } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import { Play, Pause, RotateCcw } from 'lucide-svelte';
+	import { Play, Pause, RotateCcw, Hourglass, MicrochipIcon } from 'lucide-svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -11,8 +11,8 @@
 
 	let { countdown, attendees } = $props();
 
-	let attendeeCountdown = Math.floor(countdown / attendees);
-	let attendeesRemaining = $state(attendees);
+	let attendeeCountdown = Math.floor(countdown / attendees.length);
+	let attendeesRemaining = $state(attendees.length);
 	let now = $state(Date.now());
 	let end = $state(now + attendeeCountdown * 1000);
 
@@ -106,26 +106,54 @@
 	});
 </script>
 
-<div class="grid grid-cols-none">
-	<div class="grid-span-1 mx-auto">
+<div class="grid grid-cols-1 p-2">
+	<div class="col-span-1 max-w-[500px]">
+		<div class="flex flex-col items-center">
+			<svg class="mx-auto" width="100%" height="10">
+				<!-- Background track -->
+				<rect x="0" y="0" width="100%" height="10" fill="#ccc" />
+
+				<!-- Progress bar -->
+				<rect
+					class="progress"
+					x="0"
+					y="0"
+					width="{remainingTimePercent}%"
+					height="10"
+					stroke-width="1"
+					fill="#3b82f6"
+				/>
+			</svg>
+			<div class="flex justify-between w-full">
+				<div class="p-1">
+					<span>seconds elapsed</span>
+					<Hourglass></Hourglass>
+
+					{countdown - remainingTime}
+				</div>
+
+				<div class="p-1">
+					<span>seconds remaining</span>
+					<div class="flex justify-end w-full">
+						<Hourglass></Hourglass>
+					</div>
+
+					<div class="flex justify-end w-full">
+						{remainingTime}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-span-4 flex justify-center">
 		<svg
-			class="max-w-[250px]"
+			class="max-w-[500px]"
 			in:fly={{ y: -5 }}
 			viewBox="-50 -50 100 100"
-			width="250"
-			height="250"
+			width="500"
+			height="500"
 		>
 			<title>Remaining seconds: {count}</title>
-			<!-- <g fill="none" stroke="currentColor" stroke-width="2">
-				<circle stroke="currentColor" r="46" />
-				<path
-					stroke="#3b82f6"
-					d="M 0 -46 a 46 46 0 0 0 0 92 46 46 0 0 0 0 -92"
-					pathLength="1"
-					stroke-dasharray="1"
-					stroke-dashoffset={$offset}
-				/>
-			</g> -->
 
 			<g fill="none" stroke="currentColor" stroke-width="2">
 				<circle stroke="currentColor" r="46" />
@@ -146,55 +174,70 @@
 				</g>
 			</g>
 
-			<g fill="currentColor" text-anchor="middle" dominant-baseline="baseline" font-size="13">
-				<text x="-3" y="6.5">
-					{#each Object.entries({ h, m, s }) as [key, value], i}
+			<g fill="currentColor" text-anchor="middle" font-size=".3rem">
+				<text y="-13">
+					<tspan> {attendees[attendees.length - attendeesRemaining]}</tspan>
+					<!-- {#each Object.entries({ h, m, s }) as [key, value], i}
 						{#if attendeeCountdown >= 60 ** (2 - i)}
 							<tspan dx="3" font-weight="bold">{padValue(value)}</tspan><tspan
 								dx="0.5"
 								font-size="7">{key}</tspan
 							>
 						{/if}
-					{/each}
+					{/each} -->
 				</text>
+			</g>
+
+			<g fill="currentColor" text-anchor="middle" font-size=".3rem">
+				<text y="-6.5">
+					<tspan> is speaking</tspan>
+					<!-- {#each Object.entries({ h, m, s }) as [key, value], i}
+						{#if attendeeCountdown >= 60 ** (2 - i)}
+							<tspan dx="3" font-weight="bold">{padValue(value)}</tspan><tspan
+								dx="0.5"
+								font-size="7">{key}</tspan
+							>
+						{/if}
+					{/each} -->
+				</text>
+			</g>
+			<g fill="currentColor" text-anchor="middle" font-size=".3rem">
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<svg
+					x="-8"
+					y="12"
+					onclick={() => {}}
+					xmlns="http://www.w3.org/2000/svg"
+					width="1rem"
+					height="1rem"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-mic"
+					><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path
+						d="M19 10v2a7 7 0 0 1-14 0v-2"
+					/><line x1="12" x2="12" y1="19" y2="22" /></svg
+				>
 			</g>
 		</svg>
 	</div>
 
-	<div class="grid-span-1 mx-auto max-w-[250px]" in:fly={{ y: -10, delay: 120 }}>
-		{#if isPaused}
-			<button disabled={isResetting || count === 0} onclick={handleStart}>
-				<Play />
-			</button>
-		{:else}
-			<button disabled={isResetting || count === 0} onclick={handlePause}>
-				<Pause />
-			</button>
-		{/if}
-		<button class="pl-3" onclick={handleReset}><RotateCcw /></button>
-	</div>
-
-	<div class="grid-span-1 mx-auto max-w-[250px]">
-		<div class="flex flex-row items-center">
-			<svg class="mx-auto" width="100%" height="10">
-				<!-- Background track -->
-				<rect x="0" y="0" width="100%" height="10" fill="#ccc" />
-
-				<!-- Progress bar -->
-				<rect
-					class="progress"
-					x="0"
-					y="0"
-					width="{remainingTimePercent}%"
-					height="10"
-					stroke-width="1"
-					fill="#3b82f6"
-				/>
-			</svg>
-
-			<div class="pl-3">
-				{remainingTime}
-			</div>
+	<div class="col-span-1 flex justify-center w-full" in:fly={{ y: -10, delay: 120 }}>
+		<div class="max-w-[250px]">
+			{#if isPaused}
+				<button disabled={isResetting || count === 0} onclick={handleStart}>
+					<Play />
+				</button>
+			{:else}
+				<button disabled={isResetting || count === 0} onclick={handlePause}>
+					<Pause />
+				</button>
+			{/if}
+			<button class="pl-3" onclick={handleReset}><RotateCcw /></button>
 		</div>
 	</div>
 </div>
