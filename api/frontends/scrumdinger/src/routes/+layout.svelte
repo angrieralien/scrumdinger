@@ -45,7 +45,7 @@
 	function signout() {
 		localStorage.removeItem('token');
 		user.isLoggedIn = false;
-		goto('/')
+		goto('/');
 	}
 </script>
 

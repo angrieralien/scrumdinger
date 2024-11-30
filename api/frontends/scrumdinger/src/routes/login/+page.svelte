@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
-	
+
 	let user: User;
 	let email: string = $state('admin@example.com');
 	let password: string = $state('gophers');
@@ -39,14 +39,12 @@
 	}
 </script>
 
-<div class="flex min-h-full flex-col justify-center px-6  lg:px-8">
+<div class="flex min-h-full flex-col justify-center px-6 lg:px-8">
 	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
 		<div class="flex justify-center">
 			<BellRing />
 		</div>
-		<h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight">
-			Sign in to your account
-		</h2>
+		<h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight">Sign in to your account</h2>
 	</div>
 
 	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
