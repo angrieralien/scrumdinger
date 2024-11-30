@@ -5,6 +5,6 @@
 	let attendees = 3;
 </script>
 
-<div class="grid grid-cols-1">
+<div class="flex justify-center items-center h-full">
 	<ScrumTimer {countdown} {attendees} />
 </div>

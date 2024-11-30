@@ -106,8 +106,8 @@
 	});
 </script>
 
-<div class="grid grid-cols-none">
-	<div class="grid-span-1 mx-auto">
+<div class="">
+	<div class="flex justify-center">
 		<svg
 			class="max-w-[250px]"
 			in:fly={{ y: -5 }}
@@ -161,20 +161,22 @@
 		</svg>
 	</div>
 
-	<div class="grid-span-1 mx-auto max-w-[250px]" in:fly={{ y: -10, delay: 120 }}>
-		{#if isPaused}
-			<button disabled={isResetting || count === 0} onclick={handleStart}>
-				<Play />
-			</button>
-		{:else}
-			<button disabled={isResetting || count === 0} onclick={handlePause}>
-				<Pause />
-			</button>
-		{/if}
-		<button class="pl-3" onclick={handleReset}><RotateCcw /></button>
+	<div class="flex justify-center w-full" in:fly={{ y: -10, delay: 120 }}>
+		<div class="max-w-[250px]">
+			{#if isPaused}
+				<button disabled={isResetting || count === 0} onclick={handleStart}>
+					<Play />
+				</button>
+			{:else}
+				<button disabled={isResetting || count === 0} onclick={handlePause}>
+					<Pause />
+				</button>
+			{/if}
+			<button class="pl-3" onclick={handleReset}><RotateCcw /></button>
+		</div>
 	</div>
 
-	<div class="grid-span-1 mx-auto max-w-[250px]">
+	<div class="mx-auto max-w-[250px]">
 		<div class="flex flex-row items-center">
 			<svg class="mx-auto" width="100%" height="10">
 				<!-- Background track -->
