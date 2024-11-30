@@ -6,13 +6,13 @@ export default defineConfig({
 	plugins: [sveltekit(), purgeCss()],
 	server: {
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), '/static'],
-		  },
-		proxy: {
-		  '/v1/auth/token': {
-			target: "http://localhost:6000",
-			changeOrigin: true,
-		  },
+			allow: [searchForWorkspaceRoot(process.cwd()), '/static']
 		},
-	  },
+		proxy: {
+			'/v1/auth/token': {
+				target: 'http://localhost:6000',
+				changeOrigin: true
+			}
+		}
+	}
 });

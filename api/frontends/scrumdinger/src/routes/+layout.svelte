@@ -11,7 +11,8 @@
 	import { onMount } from 'svelte';
 
 	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
-	import { user } from '$lib/models/user';
+	import { setUserContext, User } from '$lib/models/user.svelte';
+	import { goto } from '$app/navigation';
 
 	initializeStores();
 
@@ -26,6 +27,9 @@
 		dropdownRef = document.querySelector('.dropdown-menu');
 	});
 
+	let user = new User();
+	setUserContext(user);
+
 	let isLoggedIn = $derived(user.isLoggedIn);
 	// let userDate = $derived(userValue.date);
 
@@ -34,12 +38,14 @@
 	}
 
 	function login() {
-		window.location.href = '/login';
+		goto('/login');
+		isOpen = false;
 	}
 
 	function signout() {
 		localStorage.removeItem('token');
 		user.isLoggedIn = false;
+		goto('/')
 	}
 </script>
 

@@ -3,8 +3,10 @@
 
 	let countdown = 30;
 	let attendees = 3;
+
+	
 </script>
 
 <div class="grid grid-cols-1">
-	<ScrumTimer {countdown} {attendees} />
+	<ScrumTimer {countdown} {attendees} /> 
 </div>
