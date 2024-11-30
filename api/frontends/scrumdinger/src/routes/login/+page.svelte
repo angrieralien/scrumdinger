@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { BellRing } from 'lucide-svelte';
-	import { userAPI } from '../../api/userapi';
+	import { userAPI } from '$lib/api/userapi';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { user } from '../../models/user';
+	import { user } from '$lib/models/user';
 
 	const toastStore = getToastStore();
 

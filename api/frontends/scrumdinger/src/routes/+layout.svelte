@@ -11,7 +11,7 @@
 	import { onMount } from 'svelte';
 
 	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
-	import { user } from '../models/user';
+	import { user } from '$lib/models/user';
 
 	initializeStores();
 
