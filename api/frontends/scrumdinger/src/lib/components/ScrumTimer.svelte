@@ -107,7 +107,6 @@
 			return;
 		}
 
-		let tmpCount = count;
 		now = Date.now();
 		end = now + attendeeCountdown * 1000;
 		interval = setInterval(updateTimer, 1000);
