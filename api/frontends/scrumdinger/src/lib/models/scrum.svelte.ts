@@ -14,6 +14,7 @@ export class ScrumMeeting {
 	name: string = $state('Project A');
 	minutes: number = $state(5);
 	attendees: string[] = $state([]);
+	color: string = $state('bg-primary-500');
 }
 
 export class Scrum {

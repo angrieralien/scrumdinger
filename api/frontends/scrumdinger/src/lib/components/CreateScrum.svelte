@@ -4,6 +4,7 @@
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { InputChip } from '@skeletonlabs/skeleton';
 	import { getDrawerStore } from '@skeletonlabs/skeleton';
+	import { Check } from 'lucide-svelte';
 
 	const drawerStore = getDrawerStore();
 	let scrums = getScrumContext();
@@ -13,9 +14,11 @@
 
 	function submit() {
 		if (user.isLoggedIn) {
+			console.log('here');
 			//POST
 		} else {
 			scrums.meetings.push(scrum);
+			console.log(scrums);
 		}
 
 		drawerStore.close();
@@ -24,14 +27,19 @@
 	function cancel() {
 		drawerStore.close();
 	}
+
+	function colorSelected(c: string) {
+		scrum.color = c;
+	}
 </script>
 
 <div class="m-5">
 	<h1 class="mt-3 h-[32px]">{scrum.name}</h1>
 
 	<form onsubmit={submit}>
-		<div class="grid gap-6 mb-6 md:grid-cols-2">
-			<div class="mt-6">
+		<!-- <div class="grid gap-6 mb-6 md:grid-cols-2"> -->
+		<div class="flex flex-col my-6">
+			<div class="">
 				<input
 					type="input"
 					bind:value={scrum.name}
@@ -41,7 +49,7 @@
 				/>
 			</div>
 
-			<div class="w-full flex">
+			<div class="w-full flex my-6">
 				<RangeSlider
 					class="grow pr-3"
 					accent="accent-surface-500"
@@ -54,7 +62,28 @@
 				></RangeSlider>
 				{scrum.minutes} minutes
 			</div>
-			<InputChip bind:value={scrum.attendees} name="chips" placeholder="Add attendee names" />
+
+			<div class="flex flex-row justify-center my-3">
+				{#each ['bg-primary-500', 'bg-secondary-500', 'bg-white', 'bg-success-500', 'bg-warning-500'] as c}
+					<button
+						onclick={() => {
+							colorSelected(c);
+						}}
+						type="button"
+						class="btn-icon ring-2 ring-gray-500 m-3 {c}"
+					>
+						{#if scrum.color === c}
+							<Check></Check>
+						{/if}
+					</button>
+				{/each}
+			</div>
+			<InputChip
+				class="my-6"
+				bind:value={scrum.attendees}
+				name="chips"
+				placeholder="Add attendee names"
+			/>
 
 			<div class="flex flex-row justify-end w-full">
 				<button

@@ -55,12 +55,12 @@
 
 <Toast />
 
-<Drawer position="right" class="">
+<Drawer position="right" width="max-w-[500px]">
 	<CreateScrum></CreateScrum>
 </Drawer>
 
 <div class="flex flex-col h-screen">
-	<header class="h-[64px] max-h-[64px] bg-secondary-500 p-4">
+	<header class="h-[64px] max-h-[64px] bg-primary-500 p-4">
 		<div class="flex flex-row">
 			<div class="px-3"><BellRing /></div>
 			<span class="font-bold">Scrum</span><span>dinger</span>
