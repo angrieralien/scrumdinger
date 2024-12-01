@@ -37,7 +37,6 @@
 	<h1 class="mt-3 h-[32px]">{scrum.name}</h1>
 
 	<form onsubmit={submit}>
-		<!-- <div class="grid gap-6 mb-6 md:grid-cols-2"> -->
 		<div class="flex flex-col my-6">
 			<div class="">
 				<input
@@ -56,8 +55,8 @@
 					name="range-slider"
 					bind:value={scrum.minutes}
 					max={60}
-					min={5}
-					step={5}
+					min={1}
+					step={1}
 					ticked
 				></RangeSlider>
 				{scrum.minutes} minutes
@@ -78,6 +77,7 @@
 					</button>
 				{/each}
 			</div>
+
 			<InputChip
 				class="my-6"
 				bind:value={scrum.attendees}

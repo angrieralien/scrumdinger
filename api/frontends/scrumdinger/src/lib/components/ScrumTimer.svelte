@@ -3,13 +3,13 @@
 	import { tweened } from 'svelte/motion';
 	import { linear as easing } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import { Play, Pause, RotateCcw, Hourglass, MicrochipIcon } from 'lucide-svelte';
+	import { Play, Pause, RotateCcw, Hourglass, MicrochipIcon, SkipForward, X } from 'lucide-svelte';
 
 	const dispatch = createEventDispatcher();
 
 	//export let countdown;
 
-	let { countdown, attendees } = $props();
+	let { countdown, attendees, done } = $props();
 
 	let attendeeCountdown = Math.floor(countdown / attendees.length);
 	let attendeesRemaining = $state(attendees.length);
@@ -37,7 +37,9 @@
 		if (count === 0 && attendeesRemaining - 1 === 0) {
 			clearInterval(interval);
 			playDing();
-			attendeesRemaining = attendees.length;
+			setTimeout(() => {
+				done();
+			}, 2000);
 		} else if (count == 0) {
 			playDing();
 
@@ -94,6 +96,23 @@
 			end = now + attendeeCountdown * 1000;
 			interval = setInterval(updateTimer, 1000);
 		});
+	}
+
+	function handleSkip() {
+		clearInterval(interval);
+		attendeesRemaining = attendeesRemaining - 1;
+
+		if (attendeesRemaining < 1) {
+			done();
+			return;
+		}
+
+		let tmpCount = count;
+		now = Date.now();
+		end = now + attendeeCountdown * 1000;
+		interval = setInterval(updateTimer, 1000);
+		offset.set(Math.max(count - 1, 0) / attendeeCountdown);
+		rotation.set((Math.max(count - 1, 0) / attendeeCountdown) * 360);
 	}
 
 	function padValue(value: any, length = 2, char = '0') {
@@ -239,6 +258,8 @@
 				</button>
 			{/if}
 			<button class="pl-3" onclick={handleReset}><RotateCcw /></button>
+			<button class="pl-3" onclick={handleSkip}><SkipForward /></button>
+			<button class="pl-3" onclick={() => done()}><X /></button>
 		</div>
 	</div>
 </div>
