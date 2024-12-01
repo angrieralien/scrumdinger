@@ -37,6 +37,7 @@
 		if (count === 0 && attendeesRemaining - 1 === 0) {
 			clearInterval(interval);
 			playDing();
+			attendeesRemaining = attendees.length;
 		} else if (count == 0) {
 			playDing();
 

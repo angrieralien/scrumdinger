@@ -1,7 +1,9 @@
 <script>
-	import ScrumMeeting from '$lib/components/ScrumMeeting.svelte';
+	import ScrumMeetings from '$lib/components/ScrumMeetings.svelte';
 </script>
 
-<div class="flex justify-center items-center h-full">
-	<ScrumMeeting></ScrumMeeting>
+<div class="h-full">
+	<div class="h-full">
+		<ScrumMeetings></ScrumMeetings>
+	</div>
 </div>

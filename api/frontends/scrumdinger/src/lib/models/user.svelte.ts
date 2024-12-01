@@ -19,6 +19,7 @@ interface user {
 
 export class User {
 	isLoggedIn = $state(false);
+
 	token: string | null = $state('');
 	date = $state(Date.now());
 	constructor() {
