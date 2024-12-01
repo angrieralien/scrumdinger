@@ -12,7 +12,7 @@
 
 	import { initializeStores, Toast, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { setUserContext, User } from '$lib/models/user.svelte';
-	import CreateScrum from '$lib/components/CreateScrum.svelte';
+	import CRUDScrum from '$lib/components/CRUDScrum.svelte';
 
 	import { goto } from '$app/navigation';
 	import { setScrumContext, Scrum } from '$lib/models/scrum.svelte';
@@ -60,7 +60,7 @@
 
 <Drawer position="right" width="max-w-[500px]">
 	{#if drawerMeta.data['component'] === 'CRUDScrum'}
-		<CreateScrum></CreateScrum>
+		<CRUDScrum></CRUDScrum>
 	{:else if drawerMeta.data['component'] === 'HistoryScrum'}
 		<HistoryScrum></HistoryScrum>
 	{/if}

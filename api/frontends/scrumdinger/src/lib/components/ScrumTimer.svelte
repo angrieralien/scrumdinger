@@ -101,9 +101,12 @@
 	function handleSkip() {
 		clearInterval(interval);
 		attendeesRemaining = attendeesRemaining - 1;
-
+		playDing();
 		if (attendeesRemaining < 1) {
-			done();
+			setTimeout(() => {
+				done();
+			}, 2000);
+
 			return;
 		}
 
