@@ -6,14 +6,10 @@ import (
 
 	"github.com/angrieralien/scrumdinger/app/domain/checkapp"
 	"github.com/angrieralien/scrumdinger/app/domain/homeapp"
-	"github.com/angrieralien/scrumdinger/app/domain/productapp"
-	"github.com/angrieralien/scrumdinger/app/domain/tranapp"
 	"github.com/angrieralien/scrumdinger/app/domain/userapp"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
 	"github.com/angrieralien/scrumdinger/business/domain/homebus"
 	"github.com/angrieralien/scrumdinger/business/domain/homebus/stores/homedb"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus/stores/productdb"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/usercache"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/userdb"
@@ -36,7 +32,6 @@ func (add) Add(app *web.App, cfg mux.Config) {
 	// sames instances for the different set of domain apis.
 	delegate := delegate.New(cfg.Log)
 	userBus := userbus.NewBusiness(cfg.Log, delegate, usercache.NewStore(cfg.Log, userdb.NewStore(cfg.Log, cfg.DB), time.Minute))
-	productBus := productbus.NewBusiness(cfg.Log, userBus, delegate, productdb.NewStore(cfg.Log, cfg.DB))
 	homeBus := homebus.NewBusiness(cfg.Log, userBus, delegate, homedb.NewStore(cfg.Log, cfg.DB))
 
 	checkapp.Routes(app, checkapp.Config{
@@ -49,20 +44,6 @@ func (add) Add(app *web.App, cfg mux.Config) {
 		UserBus:    userBus,
 		HomeBus:    homeBus,
 		AuthClient: cfg.AuthClient,
-	})
-
-	productapp.Routes(app, productapp.Config{
-		UserBus:    userBus,
-		ProductBus: productBus,
-		AuthClient: cfg.AuthClient,
-	})
-
-	tranapp.Routes(app, tranapp.Config{
-		UserBus:    userBus,
-		ProductBus: productBus,
-		Log:        cfg.Log,
-		AuthClient: cfg.AuthClient,
-		DB:         cfg.DB,
 	})
 
 	userapp.Routes(app, userapp.Config{

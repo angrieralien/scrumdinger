@@ -13,16 +13,16 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ardanlabs/conf/v3"
-	"github.com/angrieralien/scrumdinger/api/services/sales/build/all"
-	"github.com/angrieralien/scrumdinger/api/services/sales/build/crud"
-	"github.com/angrieralien/scrumdinger/api/services/sales/build/reporting"
+	"github.com/angrieralien/scrumdinger/api/services/scrums/build/all"
+	"github.com/angrieralien/scrumdinger/api/services/scrums/build/crud"
+	"github.com/angrieralien/scrumdinger/api/services/scrums/build/reporting"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/debug"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
 	"github.com/angrieralien/scrumdinger/business/sdk/sqldb"
 	"github.com/angrieralien/scrumdinger/foundation/logger"
 	"github.com/angrieralien/scrumdinger/foundation/otel"
+	"github.com/ardanlabs/conf/v3"
 )
 
 /*
