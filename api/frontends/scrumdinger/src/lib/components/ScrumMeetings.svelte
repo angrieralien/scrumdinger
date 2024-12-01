@@ -1,13 +1,20 @@
 <script lang="ts">
 	import { getUserContext, User } from '$lib/models/user.svelte';
+	import { getDrawerStore, type DrawerSettings, type DrawerStore } from '@skeletonlabs/skeleton';
 	import { Plus } from 'lucide-svelte';
 	import { mount, onMount } from 'svelte';
 
 	let user: User;
-
+	let drawerStore: DrawerStore;
 	onMount(() => {
 		user = getUserContext();
+		drawerStore = getDrawerStore();
 	});
+
+	function onAdd() {
+		const settings: DrawerSettings = { id: 'example-1' };
+		drawerStore.open(settings);
+	}
 </script>
 
 <div class="h-full">
@@ -21,7 +28,11 @@
 		</div>
 	{/if}
 
-	<button type="button" class="add-button bg-secondary-500 m-3 btn-icon btn-icon-xl">
+	<button
+		onclick={onAdd}
+		type="button"
+		class="add-button bg-secondary-500 m-3 btn-icon btn-icon-xl"
+	>
 		<Plus></Plus>
 	</button>
 </div>

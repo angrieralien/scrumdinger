@@ -10,8 +10,10 @@
 	import { CalendarClock, BellRing, History, House, Users, User as UserIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
-	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+	import { initializeStores, Toast, Drawer } from '@skeletonlabs/skeleton';
 	import { setUserContext, User } from '$lib/models/user.svelte';
+	import CreateScrum from '$lib/components/CreateScrum.svelte';
+
 	import { goto } from '$app/navigation';
 
 	initializeStores();
@@ -47,6 +49,10 @@
 </script>
 
 <Toast />
+
+<Drawer position="right" class="">
+	<CreateScrum></CreateScrum>
+</Drawer>
 
 <div class="flex flex-col h-screen">
 	<header class="h-[64px] max-h-[64px] bg-secondary-500 p-4">
