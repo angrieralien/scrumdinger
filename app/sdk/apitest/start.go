@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	authbuild "github.com/angrieralien/scrumdinger/api/services/auth/build/all"
-	salesbuild "github.com/angrieralien/scrumdinger/api/services/sales/build/all"
+	salesbuild "github.com/angrieralien/scrumdinger/api/services/scrums/build/all"
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
