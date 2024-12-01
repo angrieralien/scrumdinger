@@ -78,58 +78,60 @@
 	<div class="h-full p-4">
 		<!-- <img class="rounded-3xl" src="/images/scrum_team_rec.svg" alt="scrum team" /> -->
 
-		{#if scrum.meetings.length > 0}
-			<div class="pb-6">
-				<dl class="list-dl">
-					{#each scrum.meetings as s, idx}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<!-- svelte-ignore a11y_no_static_element_interactions -->
-						<div class="border-b-2 border-white cursor-pointer" onclick={() => onselect(s)}>
-							<div class="rounded-full h-10 w-10 ring-1 ring-gray-500 m-3 {s.color}">
-								<CalendarClock></CalendarClock>
-							</div>
-							<span class="flex-auto">
-								<dt>{s.name}</dt>
-								<dd>{s.minutes} minutes</dd>
-							</span>
-							<span class="full"></span>
-							<button
-								onclick={(event) => {
-									onHistory(event, s);
-								}}
-								type="button"
-								class="btn-icon ring-gray-500 ring-2 m-3"
-							>
-								<History />
-							</button>
-							<button
-								onclick={(event) => {
-									onEdit(event, s, idx);
-								}}
-								type="button"
-								class="btn-icon ring-gray-500 ring-2 m-3"
-							>
-								<Pencil />
-							</button>
+		<div class="pb-6">
+			<dl class="list-dl">
+				{#each scrum.meetings as s, idx}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div class="border-b-2 border-white cursor-pointer" onclick={() => onselect(s)}>
+						<div class="rounded-full h-10 w-10 ring-1 ring-gray-500 m-3 {s.color}">
+							<CalendarClock></CalendarClock>
 						</div>
-					{/each}
-				</dl>
-			</div>
-		{:else}
-			<div class="flex flex-col items-center">
-				<div class="text-center p-6 text-2xl">
-					Ahh Snap!!! <br />Login to view your scrums or create a new meeting.
-				</div>
-			</div>
-		{/if}
+						<span class="flex-auto">
+							<dt>{s.name}</dt>
+							<dd>{s.minutes} minutes</dd>
+						</span>
+						<span class="full"></span>
+						<button
+							onclick={(event) => {
+								onHistory(event, s);
+							}}
+							type="button"
+							class="btn-icon ring-gray-500 ring-2 m-3"
+						>
+							<History />
+						</button>
+						<button
+							onclick={(event) => {
+								onEdit(event, s, idx);
+							}}
+							type="button"
+							class="btn-icon ring-gray-500 ring-2 m-3"
+						>
+							<Pencil />
+						</button>
+					</div>
+				{/each}
+			</dl>
+		</div>
 
-		<button
-			onclick={onAdd}
-			type="button"
-			class="add-button bg-secondary-500 m-3 btn-icon btn-icon-xl"
-		>
-			<Plus></Plus>
-		</button>
+		{#if scrum.meetings.length < 1}
+			<button
+				onclick={onAdd}
+				type="button"
+				class="add-button animate-bounce bg-secondary-500 m-3 btn-icon btn-icon-xl"
+			>
+				<Plus></Plus>
+			</button>
+		{:else}
+			<button
+				onclick={onAdd}
+				type="button"
+				class="add-button bg-secondary-500 m-3 btn-icon btn-icon-xl"
+			>
+				<Plus></Plus>
+			</button>
+		{/if}
 	</div>
 {/if}
 {#if showTimer}
