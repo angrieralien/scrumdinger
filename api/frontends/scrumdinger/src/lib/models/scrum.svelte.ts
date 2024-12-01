@@ -2,16 +2,20 @@ import { getContext, setContext } from 'svelte';
 
 let scrumsKey = Symbol('scrum');
 
-export function setScrumsContext(scrums: ScrumMeeting[]) {
+export function setScrumContext(scrums: Scrum) {
 	setContext(scrumsKey, scrums);
 }
 
-export function getScrumsContext(): ScrumMeeting[] {
-	return getContext(scrumsKey) as ScrumMeeting[];
+export function getScrumContext(): Scrum {
+	return getContext(scrumsKey) as Scrum;
 }
 
 export class ScrumMeeting {
 	name: string = $state('Project A');
-	time: number = $state(5);
+	minutes: number = $state(5);
 	attendees: string[] = $state([]);
+}
+
+export class Scrum {
+	meetings: ScrumMeeting[] = $state([]);
 }

@@ -15,6 +15,7 @@
 	import CreateScrum from '$lib/components/CreateScrum.svelte';
 
 	import { goto } from '$app/navigation';
+	import { setScrumContext, Scrum } from '$lib/models/scrum.svelte';
 
 	initializeStores();
 
@@ -29,8 +30,12 @@
 		dropdownRef = document.querySelector('.dropdown-menu');
 	});
 
+	// set contexts
+
 	let user = new User();
 	setUserContext(user);
+
+	setScrumContext(new Scrum());
 
 	function toggleDropdown() {
 		isOpen = !isOpen;

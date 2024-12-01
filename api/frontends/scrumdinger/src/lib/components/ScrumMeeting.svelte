@@ -1,7 +1,7 @@
 <script>
 	import ScrumTimer from '$lib/components/ScrumTimer.svelte';
 
-	let minutes = $state(1);
+	let minutes = $state(5);
 	let countdown = $derived(minutes * 60);
 	let attendeesNames = $state({
 		names: ['Stephen', 'Mark', 'John']
