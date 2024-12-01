@@ -7,7 +7,6 @@ import (
 
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
 	"github.com/angrieralien/scrumdinger/business/domain/homebus"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/sqldb"
 	"github.com/angrieralien/scrumdinger/foundation/web"
@@ -72,20 +71,6 @@ func GetUser(ctx context.Context) (userbus.User, error) {
 	v, ok := ctx.Value(userKey).(userbus.User)
 	if !ok {
 		return userbus.User{}, errors.New("user not found in context")
-	}
-
-	return v, nil
-}
-
-func setProduct(ctx context.Context, prd productbus.Product) context.Context {
-	return context.WithValue(ctx, productKey, prd)
-}
-
-// GetProduct returns the product from the context.
-func GetProduct(ctx context.Context) (productbus.Product, error) {
-	v, ok := ctx.Value(productKey).(productbus.Product)
-	if !ok {
-		return productbus.Product{}, errors.New("product not found in context")
 	}
 
 	return v, nil
