@@ -10,12 +10,14 @@
 	import { CalendarClock, BellRing, History, House, Users, User as UserIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
-	import { initializeStores, Toast, Drawer } from '@skeletonlabs/skeleton';
+	import { initializeStores, Toast, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { setUserContext, User } from '$lib/models/user.svelte';
 	import CreateScrum from '$lib/components/CreateScrum.svelte';
 
 	import { goto } from '$app/navigation';
 	import { setScrumContext, Scrum } from '$lib/models/scrum.svelte';
+	import { DrawerMeta, setDrawerContext } from '$lib/models/drawer.svelte';
+	import HistoryScrum from '$lib/components/HistoryScrum.svelte';
 
 	initializeStores();
 
@@ -34,8 +36,9 @@
 
 	let user = new User();
 	setUserContext(user);
-
 	setScrumContext(new Scrum());
+	let drawerMeta = new DrawerMeta();
+	setDrawerContext(drawerMeta);
 
 	function toggleDropdown() {
 		isOpen = !isOpen;
@@ -56,7 +59,11 @@
 <Toast />
 
 <Drawer position="right" width="max-w-[500px]">
-	<CreateScrum></CreateScrum>
+	{#if drawerMeta.data['component'] === 'CRUDScrum'}
+		<CreateScrum></CreateScrum>
+	{:else if drawerMeta.data['component'] === 'HistoryScrum'}
+		<HistoryScrum></HistoryScrum>
+	{/if}
 </Drawer>
 
 <div class="flex flex-col h-screen">
