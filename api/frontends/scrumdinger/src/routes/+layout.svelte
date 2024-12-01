@@ -30,9 +30,6 @@
 	let user = new User();
 	setUserContext(user);
 
-	let isLoggedIn = $derived(user.isLoggedIn);
-	// let userDate = $derived(userValue.date);
-
 	function toggleDropdown() {
 		isOpen = !isOpen;
 	}
@@ -52,7 +49,7 @@
 <Toast />
 
 <div class="flex flex-col h-screen">
-	<header class="h-[64px] bg-secondary-500 p-4">
+	<header class="h-[64px] max-h-[64px] bg-secondary-500 p-4">
 		<div class="flex flex-row">
 			<div class="px-3"><BellRing /></div>
 			<span class="font-bold">Scrum</span><span>dinger</span>
@@ -79,7 +76,7 @@
 							aria-labelledby="menu-button"
 							tabindex="-1"
 						>
-							{#if isLoggedIn}
+							{#if user.isLoggedIn}
 								<div class="py-1" role="none">
 									<a
 										href="#"
@@ -112,9 +109,7 @@
 										>
 									</form>
 								</div>
-							{/if}
-
-							{#if !isLoggedIn}
+							{:else}
 								<div class="py-1" role="none">
 									<div
 										class="block px-4 py-2 text-sm text-gray-700"
@@ -134,8 +129,6 @@
 	</header>
 
 	<div class="w-full h-[calc(100vh-64px)]">
-		<div class="w-full h-full">
-			{@render children()}
-		</div>
+		{@render children()}
 	</div>
 </div>
