@@ -101,9 +101,12 @@
 	function handleSkip() {
 		clearInterval(interval);
 		attendeesRemaining = attendeesRemaining - 1;
-
+		playDing();
 		if (attendeesRemaining < 1) {
-			done();
+			setTimeout(() => {
+				done();
+			}, 2000);
+
 			return;
 		}
 
@@ -126,7 +129,7 @@
 </script>
 
 <div class="grid grid-cols-1 p-2">
-	<div class="col-span-1 max-w-[500px]">
+	<div class="col-span-1">
 		<div class="flex flex-col items-center">
 			<svg class="mx-auto" width="100%" height="10">
 				<!-- Background track -->

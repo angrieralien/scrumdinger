@@ -1,38 +1,76 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import {
-		getScrumContext as getScrumContext,
-		Scrum,
-		ScrumMeeting
-	} from '$lib/models/scrum.svelte';
+	import { getScrumContext, ScrumMeeting } from '$lib/models/scrum.svelte';
 	import { getUserContext, User } from '$lib/models/user.svelte';
-	import { getDrawerStore, type DrawerSettings, type DrawerStore } from '@skeletonlabs/skeleton';
-	import { CalendarClock, Ellipsis, EllipsisVertical, Plus } from 'lucide-svelte';
+	import {
+		getDrawerStore,
+		getToastStore,
+		type DrawerSettings,
+		type DrawerStore,
+		type ToastSettings
+	} from '@skeletonlabs/skeleton';
+	import { CalendarClock, History, Pencil, Plus } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import ScrumTimer from './ScrumTimer.svelte';
-	import { stopPropagation } from 'svelte/legacy';
+	import { DrawerMeta, getDrawerContext, setDrawerContext } from '$lib/models/drawer.svelte';
+
+	const toastStore = getToastStore();
 
 	let user: User;
 	let drawerStore: DrawerStore;
+	let drawerMeta: DrawerMeta;
 	let showTimer = $state(false);
 	let selectedScrum: ScrumMeeting = $state(new ScrumMeeting());
 
 	onMount(() => {
 		user = getUserContext();
 		drawerStore = getDrawerStore();
+		drawerMeta = getDrawerContext();
 	});
 
 	// contexts
 	let scrum = getScrumContext();
 
 	function onAdd() {
-		const settings: DrawerSettings = { id: 'example-1' };
+		const settings: DrawerSettings = {};
+		delete drawerMeta.data['editScrum'];
+		drawerMeta.data['component'] = 'CRUDScrum';
+
+		drawerStore.open(settings);
+	}
+
+	function onEdit(event: any, s: ScrumMeeting, idx: number) {
+		event.stopPropagation();
+		const settings: DrawerSettings = {};
+		drawerMeta.data['component'] = 'CRUDScrum';
+		drawerMeta.data['editScrum'] = {
+			scrum: s,
+			idx: idx
+		};
+		drawerStore.open(settings);
+	}
+
+	function onHistory(event: any, s: ScrumMeeting) {
+		event.stopPropagation();
+		const settings: DrawerSettings = {};
+		drawerMeta.data['component'] = 'HistoryScrum';
+		drawerMeta.data['historyScrum'] = {
+			scrum: s
+		};
 		drawerStore.open(settings);
 	}
 
 	function onselect(s: ScrumMeeting) {
-		selectedScrum = s;
-		showTimer = true;
+		if (s.attendees.length < 1) {
+			let t: ToastSettings = {
+				message: 'No Attendees assigned to this meeting!',
+				timeout: 5000,
+				background: 'bg-error-500'
+			};
+			toastStore.trigger(t);
+		} else {
+			selectedScrum = s;
+			showTimer = true;
+		}
 	}
 </script>
 
@@ -43,10 +81,10 @@
 		{#if scrum.meetings.length > 0}
 			<div class="pb-6">
 				<dl class="list-dl">
-					{#each scrum.meetings as s}
+					{#each scrum.meetings as s, idx}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<!-- svelte-ignore a11y_no_static_element_interactions -->
-						<div class="border-b-2" onclick={() => onselect(s)}>
+						<div class="border-b-2 border-white cursor-pointer" onclick={() => onselect(s)}>
 							<div class="rounded-full h-10 w-10 ring-1 ring-gray-500 m-3 {s.color}">
 								<CalendarClock></CalendarClock>
 							</div>
@@ -57,12 +95,21 @@
 							<span class="full"></span>
 							<button
 								onclick={(event) => {
-									event.stopPropagation();
+									onHistory(event, s);
 								}}
 								type="button"
 								class="btn-icon ring-gray-500 ring-2 m-3"
 							>
-								<EllipsisVertical></EllipsisVertical>
+								<History />
+							</button>
+							<button
+								onclick={(event) => {
+									onEdit(event, s, idx);
+								}}
+								type="button"
+								class="btn-icon ring-gray-500 ring-2 m-3"
+							>
+								<Pencil />
 							</button>
 						</div>
 					{/each}

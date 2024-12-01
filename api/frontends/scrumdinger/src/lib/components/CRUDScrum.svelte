@@ -1,24 +1,66 @@
 <script lang="ts">
+	import { getDrawerContext } from '$lib/models/drawer.svelte';
 	import { getScrumContext, ScrumMeeting } from '$lib/models/scrum.svelte';
 	import { getUserContext } from '$lib/models/user.svelte';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { InputChip } from '@skeletonlabs/skeleton';
 	import { getDrawerStore } from '@skeletonlabs/skeleton';
-	import { Check } from 'lucide-svelte';
+	import { Check, Trash2 } from 'lucide-svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	const drawerStore = getDrawerStore();
+
+	let drawerMeta = getDrawerContext();
 	let scrums = getScrumContext();
 	let scrum = new ScrumMeeting();
+	let editScrum: ScrumMeeting;
+	let editIdx: number;
 
 	let user = getUserContext();
+
+	let state = 'create';
+
+	onMount(() => {
+		if (drawerMeta && drawerMeta.data && drawerMeta.data['editScrum']) {
+			editScrum = drawerMeta.data['editScrum']['scrum'];
+			editIdx = drawerMeta.data['editScrum']['idx'];
+			if (editScrum !== null) {
+				copyScrum(editScrum, scrum);
+				state = 'edit';
+			}
+		}
+	});
+
+	onDestroy(() => {
+		delete drawerMeta.data['editScrum'];
+	});
+
+	function copyScrum(src: ScrumMeeting, dst: ScrumMeeting) {
+		dst.attendees.length = 0;
+		src.attendees.forEach((a) => {
+			dst.attendees.push(a);
+		});
+
+		dst.color = src.color;
+		dst.minutes = src.minutes;
+		dst.name = src.name;
+	}
+
+	function deleteMeeting() {
+		scrums.meetings.splice(editIdx, 1);
+		drawerStore.close();
+	}
 
 	function submit() {
 		if (user.isLoggedIn) {
 			console.log('here');
 			//POST
 		} else {
-			scrums.meetings.push(scrum);
-			console.log(scrums);
+			if (state === 'edit') {
+				copyScrum(scrum, editScrum);
+			} else {
+				scrums.meetings.push(scrum);
+			}
 		}
 
 		drawerStore.close();
@@ -34,8 +76,14 @@
 </script>
 
 <div class="m-5">
-	<h1 class="mt-3 h-[32px]">{scrum.name}</h1>
+	<div class="mt-3 h-[32px] flex flex-row">
+		<h1 class="">{scrum.name}</h1>
+		{#if state === 'edit'}
+			<span class="grow"></span>
 
+			<Trash2 onclick={deleteMeeting} />
+		{/if}
+	</div>
 	<form onsubmit={submit}>
 		<div class="flex flex-col my-6">
 			<div class="">
