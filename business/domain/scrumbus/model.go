@@ -3,7 +3,6 @@ package scrumbus
 import (
 	"time"
 
-	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -19,15 +18,12 @@ type Address struct {
 
 // Scrum represents an individual scrum.
 type Scrum struct {
-	ID        uuid.UUID
-	Name      string
-	Time      int
-	Color     string
-	Attendees []string
-
+	ID          uuid.UUID
+	Name        string
+	Time        int
+	Color       string
+	Attendees   []string
 	UserID      uuid.UUID
-	Type        scrumtype.ScrumType
-	Address     Address
 	DateCreated time.Time
 	DateUpdated time.Time
 }
@@ -40,19 +36,6 @@ type NewScrum struct {
 	Time      int
 	Color     string
 	Attendees []string
-
-	Type    scrumtype.ScrumType
-	Address Address
-}
-
-// UpdateAddress is what fields can be updated in the store.
-type UpdateAddress struct {
-	Address1 *string
-	Address2 *string
-	ZipCode  *string
-	City     *string
-	State    *string
-	Country  *string
 }
 
 // UpdateScrum defines what information may be provided to modify an existing
@@ -66,7 +49,4 @@ type UpdateScrum struct {
 	Time      *int
 	Color     *string
 	Attendees []string
-
-	Type    *scrumtype.ScrumType
-	Address *UpdateAddress
 }

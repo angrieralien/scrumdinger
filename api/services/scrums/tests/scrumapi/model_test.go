@@ -16,15 +16,6 @@ func toAppScrum(scrum scrumbus.Scrum) scrumapp.Scrum {
 		Color:     scrum.Color,
 		Attendees: scrum.Attendees,
 
-		Type: scrum.Type.String(),
-		Address: scrumapp.Address{
-			Address1: scrum.Address.Address1,
-			Address2: scrum.Address.Address2,
-			ZipCode:  scrum.Address.ZipCode,
-			City:     scrum.Address.City,
-			State:    scrum.Address.State,
-			Country:  scrum.Address.Country,
-		},
 		DateCreated: scrum.DateCreated.Format(time.RFC3339),
 		DateUpdated: scrum.DateUpdated.Format(time.RFC3339),
 	}

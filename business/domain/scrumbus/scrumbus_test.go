@@ -13,7 +13,6 @@ import (
 	"github.com/angrieralien/scrumdinger/business/sdk/page"
 	"github.com/angrieralien/scrumdinger/business/sdk/unitest"
 	"github.com/angrieralien/scrumdinger/business/types/role"
-	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -188,27 +187,19 @@ func create(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 		{
 			Name: "basic",
 			ExpResp: scrumbus.Scrum{
-				UserID: sd.Users[0].ID,
-				Type:   scrumtype.Single,
-				Address: scrumbus.Address{
-					Address1: "123 Mocking Bird Lane",
-					ZipCode:  "35810",
-					City:     "Huntsville",
-					State:    "AL",
-					Country:  "US",
-				},
+				UserID:    sd.Users[0].ID,
+				Name:      "Scrumdinger",
+				Time:      5,
+				Color:     "blue",
+				Attendees: []string{"stephen", "mark", "matthew"},
 			},
 			ExcFunc: func(ctx context.Context) any {
 				nh := scrumbus.NewScrum{
-					UserID: sd.Users[0].ID,
-					Type:   scrumtype.Single,
-					Address: scrumbus.Address{
-						Address1: "123 Mocking Bird Lane",
-						ZipCode:  "35810",
-						City:     "Huntsville",
-						State:    "AL",
-						Country:  "US",
-					},
+					UserID:    sd.Users[0].ID,
+					Name:      "Scrumdinger",
+					Time:      5,
+					Color:     "blue",
+					Attendees: []string{"stephen", "mark", "matthew"},
 				}
 
 				resp, err := busDomain.Scrum.Create(ctx, nh)
@@ -243,31 +234,15 @@ func update(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 		{
 			Name: "basic",
 			ExpResp: scrumbus.Scrum{
-				ID:     sd.Users[0].Scrums[0].ID,
-				UserID: sd.Users[0].ID,
-				Type:   scrumtype.Single,
-				Address: scrumbus.Address{
-					Address1: "123 Mocking Bird Lane",
-					Address2: "apt 105",
-					ZipCode:  "35810",
-					City:     "Huntsville",
-					State:    "AL",
-					Country:  "US",
-				},
+				ID:          sd.Users[0].Scrums[0].ID,
+				UserID:      sd.Users[0].ID,
+				Name:        "update",
 				DateCreated: sd.Users[0].Scrums[0].DateCreated,
 				DateUpdated: sd.Users[0].Scrums[0].DateCreated,
 			},
 			ExcFunc: func(ctx context.Context) any {
 				uh := scrumbus.UpdateScrum{
-					Type: &scrumtype.Single,
-					Address: &scrumbus.UpdateAddress{
-						Address1: dbtest.StringPointer("123 Mocking Bird Lane"),
-						Address2: dbtest.StringPointer("apt 105"),
-						ZipCode:  dbtest.StringPointer("35810"),
-						City:     dbtest.StringPointer("Huntsville"),
-						State:    dbtest.StringPointer("AL"),
-						Country:  dbtest.StringPointer("US"),
-					},
+					Name: dbtest.StringPointer("update"),
 				}
 
 				resp, err := busDomain.Scrum.Update(ctx, sd.Users[0].Scrums[0], uh)

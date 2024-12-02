@@ -100,15 +100,6 @@ func (b *Business) Create(ctx context.Context, ns NewScrum) (Scrum, error) {
 		Color:     ns.Color,
 		Attendees: ns.Attendees,
 
-		Type: ns.Type,
-		Address: Address{
-			Address1: ns.Address.Address1,
-			Address2: ns.Address.Address2,
-			ZipCode:  ns.Address.ZipCode,
-			City:     ns.Address.City,
-			State:    ns.Address.State,
-			Country:  ns.Address.Country,
-		},
 		UserID:      ns.UserID,
 		DateCreated: now,
 		DateUpdated: now,
@@ -125,36 +116,6 @@ func (b *Business) Create(ctx context.Context, ns NewScrum) (Scrum, error) {
 func (b *Business) Update(ctx context.Context, hme Scrum, uh UpdateScrum) (Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.update")
 	defer span.End()
-
-	if uh.Type != nil {
-		hme.Type = *uh.Type
-	}
-
-	if uh.Address != nil {
-		if uh.Address.Address1 != nil {
-			hme.Address.Address1 = *uh.Address.Address1
-		}
-
-		if uh.Address.Address2 != nil {
-			hme.Address.Address2 = *uh.Address.Address2
-		}
-
-		if uh.Address.ZipCode != nil {
-			hme.Address.ZipCode = *uh.Address.ZipCode
-		}
-
-		if uh.Address.City != nil {
-			hme.Address.City = *uh.Address.City
-		}
-
-		if uh.Address.State != nil {
-			hme.Address.State = *uh.Address.State
-		}
-
-		if uh.Address.Country != nil {
-			hme.Address.Country = *uh.Address.Country
-		}
-	}
 
 	hme.DateUpdated = time.Now()
 

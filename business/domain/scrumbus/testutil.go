@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -17,26 +16,12 @@ func TestGenerateNewScrums(n int, userID uuid.UUID) []NewScrum {
 	for i := 0; i < n; i++ {
 		idx++
 
-		t := scrumtype.Single
-		if v := (idx + i) % 2; v == 0 {
-			t = scrumtype.Condo
-		}
-
 		nh := NewScrum{
-			Type:      t,
 			Name:      fmt.Sprintf("Name%d", idx),
 			Time:      idx,
 			Color:     fmt.Sprintf("Color%d", idx),
 			Attendees: []string{fmt.Sprintf("Attendee%d", idx), fmt.Sprintf("Attendee%d%d", idx, idx)},
-			Address: Address{
-				Address1: fmt.Sprintf("Address%d", idx),
-				Address2: fmt.Sprintf("Address%d", idx),
-				ZipCode:  fmt.Sprintf("%05d", idx),
-				City:     fmt.Sprintf("City%d", idx),
-				State:    fmt.Sprintf("State%d", idx),
-				Country:  fmt.Sprintf("Country%d", idx),
-			},
-			UserID: userID,
+			UserID:    userID,
 		}
 
 		newScrums[i] = nh

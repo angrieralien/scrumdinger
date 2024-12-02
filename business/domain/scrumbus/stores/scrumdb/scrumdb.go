@@ -50,9 +50,9 @@ func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (scrumbus.Storer, error) {
 func (s *Store) Create(ctx context.Context, hme scrumbus.Scrum) error {
 	const q = `
     INSERT INTO scrums
-        (scrum_id, user_id, name, time, color, attendees, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated)
+        (scrum_id, user_id, name, time, color, attendees, date_created, date_updated)
     VALUES
-        (:scrum_id, :user_id, :name, :time, :color, :attendees, :type, :address_1, :address_2, :zip_code, :city, :state, :country, :date_created, :date_updated)`
+        (:scrum_id, :user_id, :name, :time, :color, :attendees, :date_created, :date_updated)`
 
 	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(hme)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)
@@ -88,13 +88,10 @@ func (s *Store) Update(ctx context.Context, hme scrumbus.Scrum) error {
     UPDATE
         scrums
     SET
-        "address_1"     = :address_1,
-        "address_2"     = :address_2,
-        "zip_code"      = :zip_code,
-        "city"          = :city,
-        "state"         = :state,
-        "country"       = :country,
-        "type"          = :type,
+		"name"			= :name,
+		"time"			= :time,
+		"color"			= :color,
+		"attendees"		= :attendees,
         "date_updated"  = :date_updated
     WHERE
         scrum_id = :scrum_id`
@@ -115,7 +112,7 @@ func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy 
 
 	const q = `
     SELECT
-	    scrum_id, user_id, name, time, color, attendees, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	    scrum_id, user_id, name, time, color, attendees, date_created, date_updated
 	FROM
 	  	scrums`
 
@@ -176,7 +173,7 @@ func (s *Store) QueryByID(ctx context.Context, scrumID uuid.UUID) (scrumbus.Scru
 
 	const q = `
     SELECT
-	  	scrum_id, user_id, name, time, color, attendees, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	  	scrum_id, user_id, name, time, color, attendees, date_created, date_updated
     FROM
         scrums
     WHERE
@@ -203,7 +200,7 @@ func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]scrumbus
 
 	const q = `
 	SELECT
-	    scrum_id, user_id, name, time, color, attendees, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	    scrum_id, user_id, name, time, color, attendees, date_created, date_updated
 	FROM
 		scrums
 	WHERE

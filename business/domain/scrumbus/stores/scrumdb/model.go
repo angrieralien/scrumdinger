@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -19,13 +18,6 @@ type scrum struct {
 	Color     string `db:"color"`
 	Attendees string `db:"attendees"`
 
-	Type        string    `db:"type"`
-	Address1    string    `db:"address_1"`
-	Address2    string    `db:"address_2"`
-	ZipCode     string    `db:"zip_code"`
-	City        string    `db:"city"`
-	Country     string    `db:"country"`
-	State       string    `db:"state"`
 	DateCreated time.Time `db:"date_created"`
 	DateUpdated time.Time `db:"date_updated"`
 }
@@ -40,13 +32,6 @@ func toDBScrum(bus scrumbus.Scrum) scrum {
 		Color:     bus.Color,
 		Attendees: strings.Join(bus.Attendees, "\t"),
 
-		Type:        bus.Type.String(),
-		Address1:    bus.Address.Address1,
-		Address2:    bus.Address.Address2,
-		ZipCode:     bus.Address.ZipCode,
-		City:        bus.Address.City,
-		Country:     bus.Address.Country,
-		State:       bus.Address.State,
 		DateCreated: bus.DateCreated.UTC(),
 		DateUpdated: bus.DateUpdated.UTC(),
 	}
@@ -55,11 +40,6 @@ func toDBScrum(bus scrumbus.Scrum) scrum {
 }
 
 func toBusScrum(db scrum) (scrumbus.Scrum, error) {
-	typ, err := scrumtype.Parse(db.Type)
-	if err != nil {
-		return scrumbus.Scrum{}, fmt.Errorf("parse type: %w", err)
-	}
-
 	bus := scrumbus.Scrum{
 		ID:        db.ID,
 		Name:      db.Name,
@@ -67,15 +47,7 @@ func toBusScrum(db scrum) (scrumbus.Scrum, error) {
 		Color:     db.Color,
 		Attendees: strings.Split(db.Attendees, "\t"),
 		UserID:    db.UserID,
-		Type:      typ,
-		Address: scrumbus.Address{
-			Address1: db.Address1,
-			Address2: db.Address2,
-			ZipCode:  db.ZipCode,
-			City:     db.City,
-			Country:  db.Country,
-			State:    db.State,
-		},
+
 		DateCreated: db.DateCreated.In(time.Local),
 		DateUpdated: db.DateUpdated.In(time.Local),
 	}

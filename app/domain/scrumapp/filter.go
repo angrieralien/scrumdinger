@@ -6,7 +6,6 @@ import (
 
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -19,7 +18,6 @@ func parseQueryParams(r *http.Request) queryParams {
 		OrderBy:          values.Get("orderBy"),
 		ID:               values.Get("scrum_id"),
 		UserID:           values.Get("user_id"),
-		Type:             values.Get("type"),
 		StartCreatedDate: values.Get("start_created_date"),
 		EndCreatedDate:   values.Get("end_created_date"),
 	}
@@ -44,14 +42,6 @@ func parseFilter(qp queryParams) (scrumbus.QueryFilter, error) {
 			return scrumbus.QueryFilter{}, errs.NewFieldsError("user_id", err)
 		}
 		filter.UserID = &id
-	}
-
-	if qp.Type != "" {
-		typ, err := scrumtype.Parse(qp.Type)
-		if err != nil {
-			return scrumbus.QueryFilter{}, errs.NewFieldsError("type", err)
-		}
-		filter.Type = &typ
 	}
 
 	if qp.StartCreatedDate != "" {
