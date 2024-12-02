@@ -1,4 +1,4 @@
-package homedb
+package scrumdb
 
 import (
 	"bytes"
@@ -11,8 +11,8 @@ func (s *Store) applyFilter(filter scrumbus.QueryFilter, data map[string]any, bu
 	var wc []string
 
 	if filter.ID != nil {
-		data["home_id"] = *filter.ID
-		wc = append(wc, "home_id = :home_id")
+		data["scrum_id"] = *filter.ID
+		wc = append(wc, "scrum_id = :scrum_id")
 	}
 
 	if filter.UserID != nil {

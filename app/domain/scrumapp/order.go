@@ -5,7 +5,7 @@ import (
 )
 
 var orderByFields = map[string]string{
-	"home_id": scrumbus.OrderByID,
-	"type":    scrumbus.OrderByType,
-	"user_id": scrumbus.OrderByUserID,
+	"scrum_id": scrumbus.OrderByID,
+	"type":     scrumbus.OrderByType,
+	"user_id":  scrumbus.OrderByUserID,
 }

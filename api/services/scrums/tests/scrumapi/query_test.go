@@ -1,4 +1,4 @@
-package home_test
+package scrum_test
 
 import (
 	"fmt"
@@ -13,9 +13,9 @@ import (
 )
 
 func query200(sd apitest.SeedData) []apitest.Table {
-	hmes := make([]scrumbus.Home, 0, len(sd.Admins[0].Homes)+len(sd.Users[0].Homes))
-	hmes = append(hmes, sd.Admins[0].Homes...)
-	hmes = append(hmes, sd.Users[0].Homes...)
+	hmes := make([]scrumbus.Scrum, 0, len(sd.Admins[0].Scrums)+len(sd.Users[0].Scrums))
+	hmes = append(hmes, sd.Admins[0].Scrums...)
+	hmes = append(hmes, sd.Users[0].Scrums...)
 
 	sort.Slice(hmes, func(i, j int) bool {
 		return hmes[i].ID.String() <= hmes[j].ID.String()
@@ -24,16 +24,16 @@ func query200(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "basic",
-			URL:        "/v1/homes?page=1&rows=10&orderBy=home_id,ASC",
+			URL:        "/v1/scrums?page=1&rows=10&orderBy=scrum_id,ASC",
 			Token:      sd.Admins[0].Token,
 			StatusCode: http.StatusOK,
 			Method:     http.MethodGet,
-			GotResp:    &query.Result[scrumapp.Home]{},
-			ExpResp: &query.Result[scrumapp.Home]{
+			GotResp:    &query.Result[scrumapp.Scrum]{},
+			ExpResp: &query.Result[scrumapp.Scrum]{
 				Page:        1,
 				RowsPerPage: 10,
 				Total:       len(hmes),
-				Items:       toAppHomes(hmes),
+				Items:       toAppScrums(hmes),
 			},
 			CmpFunc: func(got any, exp any) string {
 				return cmp.Diff(got, exp)
@@ -48,12 +48,12 @@ func queryByID200(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "basic",
-			URL:        fmt.Sprintf("/v1/homes/%s", sd.Users[0].Homes[0].ID),
+			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[0].ID),
 			Token:      sd.Users[0].Token,
 			StatusCode: http.StatusOK,
 			Method:     http.MethodGet,
-			GotResp:    &scrumapp.Home{},
-			ExpResp:    toAppHomePtr(sd.Users[0].Homes[0]),
+			GotResp:    &scrumapp.Scrum{},
+			ExpResp:    toAppScrumPtr(sd.Users[0].Scrums[0]),
 			CmpFunc: func(got any, exp any) string {
 				return cmp.Diff(got, exp)
 			},

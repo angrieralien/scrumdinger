@@ -8,8 +8,8 @@ import (
 // User extends the dbtest user for api test support.
 type User struct {
 	userbus.User
-	Homes []scrumbus.Home
-	Token string
+	Scrums []scrumbus.Scrum
+	Token  string
 }
 
 // SeedData represents users for api tests.

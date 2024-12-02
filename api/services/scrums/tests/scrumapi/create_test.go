@@ -1,4 +1,4 @@
-package home_test
+package scrum_test
 
 import (
 	"net/http"
@@ -13,11 +13,11 @@ func create200(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "basic",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusOK,
-			Input: &scrumapp.NewHome{
+			Input: &scrumapp.NewScrum{
 				Type: "SINGLE FAMILY",
 				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
@@ -27,8 +27,8 @@ func create200(sd apitest.SeedData) []apitest.Table {
 					Country:  "US",
 				},
 			},
-			GotResp: &scrumapp.Home{},
-			ExpResp: &scrumapp.Home{
+			GotResp: &scrumapp.Scrum{},
+			ExpResp: &scrumapp.Scrum{
 				UserID: sd.Users[0].ID.String(),
 				Type:   "SINGLE FAMILY",
 				Address: scrumapp.Address{
@@ -40,12 +40,12 @@ func create200(sd apitest.SeedData) []apitest.Table {
 				},
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.(*scrumapp.Home)
+				gotResp, exists := got.(*scrumapp.Scrum)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.(*scrumapp.Home)
+				expResp := exp.(*scrumapp.Scrum)
 
 				expResp.ID = gotResp.ID
 				expResp.DateCreated = gotResp.DateCreated
@@ -63,11 +63,11 @@ func create400(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "missing-input",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusBadRequest,
-			Input:      &scrumapp.NewHome{},
+			Input:      &scrumapp.NewScrum{},
 			GotResp:    &errs.Error{},
 			ExpResp:    errs.Newf(errs.InvalidArgument, "validate: [{\"field\":\"type\",\"error\":\"type is a required field\"},{\"field\":\"address1\",\"error\":\"address1 is a required field\"},{\"field\":\"zipCode\",\"error\":\"zipCode is a required field\"},{\"field\":\"city\",\"error\":\"city is a required field\"},{\"field\":\"state\",\"error\":\"state is a required field\"},{\"field\":\"country\",\"error\":\"country is a required field\"}]"),
 			CmpFunc: func(got any, exp any) string {
@@ -76,11 +76,11 @@ func create400(sd apitest.SeedData) []apitest.Table {
 		},
 		{
 			Name:       "bad-type",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusBadRequest,
-			Input: &scrumapp.NewHome{
+			Input: &scrumapp.NewScrum{
 				Type: "BAD TYPE",
 				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
@@ -91,7 +91,7 @@ func create400(sd apitest.SeedData) []apitest.Table {
 				},
 			},
 			GotResp: &errs.Error{},
-			ExpResp: errs.Newf(errs.InvalidArgument, "parse: invalid home type \"BAD TYPE\""),
+			ExpResp: errs.Newf(errs.InvalidArgument, "parse: invalid scrum type \"BAD TYPE\""),
 			CmpFunc: func(got any, exp any) string {
 				return cmp.Diff(got, exp)
 			},
@@ -105,7 +105,7 @@ func create401(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "emptytoken",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      "&nbsp;",
 			Method:     http.MethodPost,
 			StatusCode: http.StatusUnauthorized,
@@ -117,7 +117,7 @@ func create401(sd apitest.SeedData) []apitest.Table {
 		},
 		{
 			Name:       "badtoken",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      sd.Admins[0].Token[:10],
 			Method:     http.MethodPost,
 			StatusCode: http.StatusUnauthorized,
@@ -129,7 +129,7 @@ func create401(sd apitest.SeedData) []apitest.Table {
 		},
 		{
 			Name:       "badsig",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      sd.Admins[0].Token + "A",
 			Method:     http.MethodPost,
 			StatusCode: http.StatusUnauthorized,
@@ -141,7 +141,7 @@ func create401(sd apitest.SeedData) []apitest.Table {
 		},
 		{
 			Name:       "wronguser",
-			URL:        "/v1/homes",
+			URL:        "/v1/scrums",
 			Token:      sd.Admins[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusUnauthorized,

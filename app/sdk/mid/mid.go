@@ -31,7 +31,7 @@ const (
 	userIDKey
 	userKey
 	productKey
-	homeKey
+	scrumKey
 	trKey
 )
 
@@ -76,15 +76,15 @@ func GetUser(ctx context.Context) (userbus.User, error) {
 	return v, nil
 }
 
-func setHome(ctx context.Context, hme scrumbus.Home) context.Context {
-	return context.WithValue(ctx, homeKey, hme)
+func setScrum(ctx context.Context, hme scrumbus.Scrum) context.Context {
+	return context.WithValue(ctx, scrumKey, hme)
 }
 
-// GetHome returns the home from the context.
-func GetHome(ctx context.Context) (scrumbus.Home, error) {
-	v, ok := ctx.Value(homeKey).(scrumbus.Home)
+// GetScrum returns the scrum from the context.
+func GetScrum(ctx context.Context) (scrumbus.Scrum, error) {
+	v, ok := ctx.Value(scrumKey).(scrumbus.Scrum)
 	if !ok {
-		return scrumbus.Home{}, errors.New("home not found in context")
+		return scrumbus.Scrum{}, errors.New("scrum not found in context")
 	}
 
 	return v, nil

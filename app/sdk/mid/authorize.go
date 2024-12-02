@@ -102,36 +102,36 @@ func AuthorizeUser(client *authclient.Client, userBus *userbus.Business, rule st
 	return m
 }
 
-// AuthorizeHome executes the specified role and extracts the specified
-// home from the DB if a home id is specified in the call. Depending on
+// AuthorizeScrum executes the specified role and extracts the specified
+// scrum from the DB if a scrum id is specified in the call. Depending on
 // the rule specified, the userid from the claims may be compared with the
-// specified user id from the home.
-func AuthorizeHome(client *authclient.Client, homeBus *scrumbus.Business) web.MidFunc {
+// specified user id from the scrum.
+func AuthorizeScrum(client *authclient.Client, scrumBus *scrumbus.Business) web.MidFunc {
 	m := func(next web.HandlerFunc) web.HandlerFunc {
 		h := func(ctx context.Context, r *http.Request) web.Encoder {
-			id := web.Param(r, "home_id")
+			id := web.Param(r, "scrum_id")
 
 			var userID uuid.UUID
 
 			if id != "" {
 				var err error
-				homeID, err := uuid.Parse(id)
+				scrumID, err := uuid.Parse(id)
 				if err != nil {
 					return errs.New(errs.Unauthenticated, ErrInvalidID)
 				}
 
-				hme, err := homeBus.QueryByID(ctx, homeID)
+				hme, err := scrumBus.QueryByID(ctx, scrumID)
 				if err != nil {
 					switch {
 					case errors.Is(err, scrumbus.ErrNotFound):
 						return errs.New(errs.Unauthenticated, err)
 					default:
-						return errs.Newf(errs.Unauthenticated, "querybyid: homeID[%s]: %s", homeID, err)
+						return errs.Newf(errs.Unauthenticated, "querybyid: scrumID[%s]: %s", scrumID, err)
 					}
 				}
 
 				userID = hme.UserID
-				ctx = setHome(ctx, hme)
+				ctx = setScrum(ctx, hme)
 			}
 
 			ctx, cancel := context.WithTimeout(ctx, 5*time.Second)

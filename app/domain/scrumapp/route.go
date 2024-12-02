@@ -16,7 +16,7 @@ import (
 type Config struct {
 	Log        *logger.Logger
 	UserBus    *userbus.Business
-	HomeBus    *scrumbus.Business
+	ScrumBus   *scrumbus.Business
 	AuthClient *authclient.Client
 }
 
@@ -27,13 +27,13 @@ func Routes(app *web.App, cfg Config) {
 	authen := mid.Authenticate(cfg.AuthClient)
 	ruleAny := mid.Authorize(cfg.AuthClient, auth.RuleAny)
 	ruleUserOnly := mid.Authorize(cfg.AuthClient, auth.RuleUserOnly)
-	ruleAuthorizeHome := mid.AuthorizeHome(cfg.AuthClient, cfg.HomeBus)
+	ruleAuthorizeScrum := mid.AuthorizeScrum(cfg.AuthClient, cfg.ScrumBus)
 
-	api := newApp(cfg.HomeBus)
+	api := newApp(cfg.ScrumBus)
 
-	app.HandlerFunc(http.MethodGet, version, "/homes", api.query, authen, ruleAny)
-	app.HandlerFunc(http.MethodGet, version, "/homes/{home_id}", api.queryByID, authen, ruleAuthorizeHome)
-	app.HandlerFunc(http.MethodPost, version, "/homes", api.create, authen, ruleUserOnly)
-	app.HandlerFunc(http.MethodPut, version, "/homes/{home_id}", api.update, authen, ruleAuthorizeHome)
-	app.HandlerFunc(http.MethodDelete, version, "/homes/{home_id}", api.delete, authen, ruleAuthorizeHome)
+	app.HandlerFunc(http.MethodGet, version, "/scrums", api.query, authen, ruleAny)
+	app.HandlerFunc(http.MethodGet, version, "/scrums/{scrum_id}", api.queryByID, authen, ruleAuthorizeScrum)
+	app.HandlerFunc(http.MethodPost, version, "/scrums", api.create, authen, ruleUserOnly)
+	app.HandlerFunc(http.MethodPut, version, "/scrums/{scrum_id}", api.update, authen, ruleAuthorizeScrum)
+	app.HandlerFunc(http.MethodDelete, version, "/scrums/{scrum_id}", api.delete, authen, ruleAuthorizeScrum)
 }

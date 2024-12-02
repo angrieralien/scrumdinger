@@ -1,4 +1,4 @@
-package home_test
+package scrum_test
 
 import (
 	"context"
@@ -21,15 +21,15 @@ func insertSeedData(db *dbtest.Database, ath *auth.Auth) (apitest.SeedData, erro
 		return apitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err := scrumbus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
+	hmes, err := scrumbus.TestGenerateSeedScrums(ctx, 2, busDomain.Scrum, usrs[0].ID)
 	if err != nil {
-		return apitest.SeedData{}, fmt.Errorf("seeding homes : %w", err)
+		return apitest.SeedData{}, fmt.Errorf("seeding scrums : %w", err)
 	}
 
 	tu1 := apitest.User{
-		User:  usrs[0],
-		Homes: hmes,
-		Token: apitest.Token(db.BusDomain.User, ath, usrs[0].Email.Address),
+		User:   usrs[0],
+		Scrums: hmes,
+		Token:  apitest.Token(db.BusDomain.User, ath, usrs[0].Email.Address),
 	}
 
 	// -------------------------------------------------------------------------
@@ -51,15 +51,15 @@ func insertSeedData(db *dbtest.Database, ath *auth.Auth) (apitest.SeedData, erro
 		return apitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err = scrumbus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
+	hmes, err = scrumbus.TestGenerateSeedScrums(ctx, 2, busDomain.Scrum, usrs[0].ID)
 	if err != nil {
-		return apitest.SeedData{}, fmt.Errorf("seeding homes : %w", err)
+		return apitest.SeedData{}, fmt.Errorf("seeding scrums : %w", err)
 	}
 
 	tu3 := apitest.User{
-		User:  usrs[0],
-		Homes: hmes,
-		Token: apitest.Token(db.BusDomain.User, ath, usrs[0].Email.Address),
+		User:   usrs[0],
+		Scrums: hmes,
+		Token:  apitest.Token(db.BusDomain.User, ath, usrs[0].Email.Address),
 	}
 
 	// -------------------------------------------------------------------------

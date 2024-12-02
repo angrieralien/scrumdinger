@@ -9,7 +9,7 @@ import (
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/angrieralien/scrumdinger/app/sdk/mid"
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/types/hometype"
+	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 )
 
 type queryParams struct {
@@ -35,8 +35,8 @@ type Address struct {
 	Country  string `json:"country"`
 }
 
-// Home represents information about an individual home.
-type Home struct {
+// Scrum represents information about an individual scrum.
+type Scrum struct {
 	ID          string  `json:"id"`
 	UserID      string  `json:"userID"`
 	Type        string  `json:"type"`
@@ -46,13 +46,13 @@ type Home struct {
 }
 
 // Encode implements the encoder interface.
-func (app Home) Encode() ([]byte, string, error) {
+func (app Scrum) Encode() ([]byte, string, error) {
 	data, err := json.Marshal(app)
 	return data, "application/json", err
 }
 
-func toAppHome(hme scrumbus.Home) Home {
-	return Home{
+func toAppScrum(hme scrumbus.Scrum) Scrum {
+	return Scrum{
 		ID:     hme.ID.String(),
 		UserID: hme.UserID.String(),
 		Type:   hme.Type.String(),
@@ -69,10 +69,10 @@ func toAppHome(hme scrumbus.Home) Home {
 	}
 }
 
-func toAppHomes(homes []scrumbus.Home) []Home {
-	app := make([]Home, len(homes))
-	for i, hme := range homes {
-		app[i] = toAppHome(hme)
+func toAppScrums(scrums []scrumbus.Scrum) []Scrum {
+	app := make([]Scrum, len(scrums))
+	for i, hme := range scrums {
+		app[i] = toAppScrum(hme)
 	}
 
 	return app
@@ -90,19 +90,19 @@ type NewAddress struct {
 	Country  string `json:"country" validate:"required,iso3166_1_alpha2"`
 }
 
-// NewHome defines the data needed to add a new home.
-type NewHome struct {
+// NewScrum defines the data needed to add a new scrum.
+type NewScrum struct {
 	Type    string     `json:"type" validate:"required"`
 	Address NewAddress `json:"address"`
 }
 
 // Decode implements the decoder interface.
-func (app *NewHome) Decode(data []byte) error {
+func (app *NewScrum) Decode(data []byte) error {
 	return json.Unmarshal(data, app)
 }
 
 // Validate checks if the data in the model is considered clean.
-func (app NewHome) Validate() error {
+func (app NewScrum) Validate() error {
 	if err := errs.Check(app); err != nil {
 		return errs.Newf(errs.InvalidArgument, "validate: %s", err)
 	}
@@ -110,18 +110,18 @@ func (app NewHome) Validate() error {
 	return nil
 }
 
-func toBusNewHome(ctx context.Context, app NewHome) (scrumbus.NewHome, error) {
+func toBusNewScrum(ctx context.Context, app NewScrum) (scrumbus.NewScrum, error) {
 	userID, err := mid.GetUserID(ctx)
 	if err != nil {
-		return scrumbus.NewHome{}, fmt.Errorf("getuserid: %w", err)
+		return scrumbus.NewScrum{}, fmt.Errorf("getuserid: %w", err)
 	}
 
-	typ, err := hometype.Parse(app.Type)
+	typ, err := scrumtype.Parse(app.Type)
 	if err != nil {
-		return scrumbus.NewHome{}, fmt.Errorf("parse: %w", err)
+		return scrumbus.NewScrum{}, fmt.Errorf("parse: %w", err)
 	}
 
-	bus := scrumbus.NewHome{
+	bus := scrumbus.NewScrum{
 		UserID: userID,
 		Type:   typ,
 		Address: scrumbus.Address{
@@ -149,19 +149,19 @@ type UpdateAddress struct {
 	Country  *string `json:"country" validate:"omitempty,iso3166_1_alpha2"`
 }
 
-// UpdateHome defines the data needed to update a home.
-type UpdateHome struct {
+// UpdateScrum defines the data needed to update a scrum.
+type UpdateScrum struct {
 	Type    *string        `json:"type"`
 	Address *UpdateAddress `json:"address"`
 }
 
 // Decode implements the decoder interface.
-func (app *UpdateHome) Decode(data []byte) error {
+func (app *UpdateScrum) Decode(data []byte) error {
 	return json.Unmarshal(data, app)
 }
 
 // Validate checks the data in the model is considered clean.
-func (app UpdateHome) Validate() error {
+func (app UpdateScrum) Validate() error {
 	if err := errs.Check(app); err != nil {
 		return errs.Newf(errs.InvalidArgument, "validate: %s", err)
 	}
@@ -169,17 +169,17 @@ func (app UpdateHome) Validate() error {
 	return nil
 }
 
-func toBusUpdateHome(app UpdateHome) (scrumbus.UpdateHome, error) {
-	var t hometype.HomeType
+func toBusUpdateScrum(app UpdateScrum) (scrumbus.UpdateScrum, error) {
+	var t scrumtype.ScrumType
 	if app.Type != nil {
 		var err error
-		t, err = hometype.Parse(*app.Type)
+		t, err = scrumtype.Parse(*app.Type)
 		if err != nil {
-			return scrumbus.UpdateHome{}, fmt.Errorf("parse: %w", err)
+			return scrumbus.UpdateScrum{}, fmt.Errorf("parse: %w", err)
 		}
 	}
 
-	bus := scrumbus.UpdateHome{
+	bus := scrumbus.UpdateScrum{
 		Type: &t,
 	}
 

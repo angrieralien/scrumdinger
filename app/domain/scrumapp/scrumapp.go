@@ -1,4 +1,4 @@
-// Package scrumapp maintains the app layer api for the home domain.
+// Package scrumapp maintains the app layer api for the scrum domain.
 package scrumapp
 
 import (
@@ -15,66 +15,66 @@ import (
 )
 
 type app struct {
-	homeBus *scrumbus.Business
+	scrumBus *scrumbus.Business
 }
 
-func newApp(homeBus *scrumbus.Business) *app {
+func newApp(scrumBus *scrumbus.Business) *app {
 	return &app{
-		homeBus: homeBus,
+		scrumBus: scrumBus,
 	}
 }
 
 func (a *app) create(ctx context.Context, r *http.Request) web.Encoder {
-	var app NewHome
+	var app NewScrum
 	if err := web.Decode(r, &app); err != nil {
 		return errs.New(errs.InvalidArgument, err)
 	}
 
-	nh, err := toBusNewHome(ctx, app)
+	nh, err := toBusNewScrum(ctx, app)
 	if err != nil {
 		return errs.New(errs.InvalidArgument, err)
 	}
 
-	hme, err := a.homeBus.Create(ctx, nh)
+	hme, err := a.scrumBus.Create(ctx, nh)
 	if err != nil {
 		return errs.Newf(errs.Internal, "create: hme[%+v]: %s", app, err)
 	}
 
-	return toAppHome(hme)
+	return toAppScrum(hme)
 }
 
 func (a *app) update(ctx context.Context, r *http.Request) web.Encoder {
-	var app UpdateHome
+	var app UpdateScrum
 	if err := web.Decode(r, &app); err != nil {
 		return errs.New(errs.InvalidArgument, err)
 	}
 
-	uh, err := toBusUpdateHome(app)
+	uh, err := toBusUpdateScrum(app)
 	if err != nil {
 		return errs.New(errs.InvalidArgument, err)
 	}
 
-	hme, err := mid.GetHome(ctx)
+	hme, err := mid.GetScrum(ctx)
 	if err != nil {
-		return errs.Newf(errs.Internal, "home missing in context: %s", err)
+		return errs.Newf(errs.Internal, "scrum missing in context: %s", err)
 	}
 
-	updUsr, err := a.homeBus.Update(ctx, hme, uh)
+	updUsr, err := a.scrumBus.Update(ctx, hme, uh)
 	if err != nil {
-		return errs.Newf(errs.Internal, "update: homeID[%s] uh[%+v]: %s", hme.ID, uh, err)
+		return errs.Newf(errs.Internal, "update: scrumID[%s] uh[%+v]: %s", hme.ID, uh, err)
 	}
 
-	return toAppHome(updUsr)
+	return toAppScrum(updUsr)
 }
 
 func (a *app) delete(ctx context.Context, _ *http.Request) web.Encoder {
-	hme, err := mid.GetHome(ctx)
+	hme, err := mid.GetScrum(ctx)
 	if err != nil {
-		return errs.Newf(errs.Internal, "homeID missing in context: %s", err)
+		return errs.Newf(errs.Internal, "scrumID missing in context: %s", err)
 	}
 
-	if err := a.homeBus.Delete(ctx, hme); err != nil {
-		return errs.Newf(errs.Internal, "delete: homeID[%s]: %s", hme.ID, err)
+	if err := a.scrumBus.Delete(ctx, hme); err != nil {
+		return errs.Newf(errs.Internal, "delete: scrumID[%s]: %s", hme.ID, err)
 	}
 
 	return nil
@@ -98,24 +98,24 @@ func (a *app) query(ctx context.Context, r *http.Request) web.Encoder {
 		return errs.NewFieldsError("order", err)
 	}
 
-	hmes, err := a.homeBus.Query(ctx, filter, orderBy, page)
+	hmes, err := a.scrumBus.Query(ctx, filter, orderBy, page)
 	if err != nil {
 		return errs.Newf(errs.Internal, "query: %s", err)
 	}
 
-	total, err := a.homeBus.Count(ctx, filter)
+	total, err := a.scrumBus.Count(ctx, filter)
 	if err != nil {
 		return errs.Newf(errs.Internal, "count: %s", err)
 	}
 
-	return query.NewResult(toAppHomes(hmes), total, page)
+	return query.NewResult(toAppScrums(hmes), total, page)
 }
 
 func (a *app) queryByID(ctx context.Context, _ *http.Request) web.Encoder {
-	hme, err := mid.GetHome(ctx)
+	hme, err := mid.GetScrum(ctx)
 	if err != nil {
 		return errs.Newf(errs.Internal, "querybyid: %s", err)
 	}
 
-	return toAppHome(hme)
+	return toAppScrum(hme)
 }

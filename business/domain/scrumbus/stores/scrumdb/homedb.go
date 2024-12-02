@@ -1,5 +1,5 @@
-// Package homedb contains home related CRUD functionality.
-package homedb
+// Package scrumdb contains scrum related CRUD functionality.
+package scrumdb
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// Store manages the set of APIs for home database access.
+// Store manages the set of APIs for scrum database access.
 type Store struct {
 	log *logger.Logger
 	db  sqlx.ExtContext
@@ -46,34 +46,34 @@ func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (scrumbus.Storer, error) {
 	return &store, nil
 }
 
-// Create inserts a new home into the database.
-func (s *Store) Create(ctx context.Context, hme scrumbus.Home) error {
+// Create inserts a new scrum into the database.
+func (s *Store) Create(ctx context.Context, hme scrumbus.Scrum) error {
 	const q = `
-    INSERT INTO homes
-        (home_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated)
+    INSERT INTO scrums
+        (scrum_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated)
     VALUES
-        (:home_id, :user_id, :type, :address_1, :address_2, :zip_code, :city, :state, :country, :date_created, :date_updated)`
+        (:scrum_id, :user_id, :type, :address_1, :address_2, :zip_code, :city, :state, :country, :date_created, :date_updated)`
 
-	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBHome(hme)); err != nil {
+	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(hme)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)
 	}
 
 	return nil
 }
 
-// Delete removes a home from the database.
-func (s *Store) Delete(ctx context.Context, hme scrumbus.Home) error {
+// Delete removes a scrum from the database.
+func (s *Store) Delete(ctx context.Context, hme scrumbus.Scrum) error {
 	data := struct {
-		ID string `db:"home_id"`
+		ID string `db:"scrum_id"`
 	}{
 		ID: hme.ID.String(),
 	}
 
 	const q = `
     DELETE FROM
-	    homes
+	    scrums
 	WHERE
-	  	home_id = :home_id`
+	  	scrum_id = :scrum_id`
 
 	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, data); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)
@@ -82,11 +82,11 @@ func (s *Store) Delete(ctx context.Context, hme scrumbus.Home) error {
 	return nil
 }
 
-// Update replaces a home document in the database.
-func (s *Store) Update(ctx context.Context, hme scrumbus.Home) error {
+// Update replaces a scrum document in the database.
+func (s *Store) Update(ctx context.Context, hme scrumbus.Scrum) error {
 	const q = `
     UPDATE
-        homes
+        scrums
     SET
         "address_1"     = :address_1,
         "address_2"     = :address_2,
@@ -97,17 +97,17 @@ func (s *Store) Update(ctx context.Context, hme scrumbus.Home) error {
         "type"          = :type,
         "date_updated"  = :date_updated
     WHERE
-        home_id = :home_id`
+        scrum_id = :scrum_id`
 
-	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBHome(hme)); err != nil {
+	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(hme)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)
 	}
 
 	return nil
 }
 
-// Query retrieves a list of existing homes from the database.
-func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy order.By, page page.Page) ([]scrumbus.Home, error) {
+// Query retrieves a list of existing scrums from the database.
+func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy order.By, page page.Page) ([]scrumbus.Scrum, error) {
 	data := map[string]any{
 		"offset":        (page.Number() - 1) * page.RowsPerPage(),
 		"rows_per_page": page.RowsPerPage(),
@@ -115,9 +115,9 @@ func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy 
 
 	const q = `
     SELECT
-	    home_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	    scrum_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
 	FROM
-	  	homes`
+	  	scrums`
 
 	buf := bytes.NewBufferString(q)
 	s.applyFilter(filter, data, buf)
@@ -130,12 +130,12 @@ func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy 
 	buf.WriteString(orderByClause)
 	buf.WriteString(" OFFSET :offset ROWS FETCH NEXT :rows_per_page ROWS ONLY")
 
-	var dbHmes []home
+	var dbHmes []scrum
 	if err := sqldb.NamedQuerySlice(ctx, s.log, s.db, buf.String(), data, &dbHmes); err != nil {
 		return nil, fmt.Errorf("namedqueryslice: %w", err)
 	}
 
-	hmes, err := toBusHomes(dbHmes)
+	hmes, err := toBusScrums(dbHmes)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy 
 	return hmes, nil
 }
 
-// Count returns the total number of homes in the DB.
+// Count returns the total number of scrums in the DB.
 func (s *Store) Count(ctx context.Context, filter scrumbus.QueryFilter) (int, error) {
 	data := map[string]any{}
 
@@ -151,7 +151,7 @@ func (s *Store) Count(ctx context.Context, filter scrumbus.QueryFilter) (int, er
     SELECT
         count(1)
     FROM
-        homes`
+        scrums`
 
 	buf := bytes.NewBufferString(q)
 	s.applyFilter(filter, data, buf)
@@ -166,35 +166,35 @@ func (s *Store) Count(ctx context.Context, filter scrumbus.QueryFilter) (int, er
 	return count.Count, nil
 }
 
-// QueryByID gets the specified home from the database.
-func (s *Store) QueryByID(ctx context.Context, homeID uuid.UUID) (scrumbus.Home, error) {
+// QueryByID gets the specified scrum from the database.
+func (s *Store) QueryByID(ctx context.Context, scrumID uuid.UUID) (scrumbus.Scrum, error) {
 	data := struct {
-		ID string `db:"home_id"`
+		ID string `db:"scrum_id"`
 	}{
-		ID: homeID.String(),
+		ID: scrumID.String(),
 	}
 
 	const q = `
     SELECT
-	  	home_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	  	scrum_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
     FROM
-        homes
+        scrums
     WHERE
-        home_id = :home_id`
+        scrum_id = :scrum_id`
 
-	var dbHme home
+	var dbHme scrum
 	if err := sqldb.NamedQueryStruct(ctx, s.log, s.db, q, data, &dbHme); err != nil {
 		if errors.Is(err, sqldb.ErrDBNotFound) {
-			return scrumbus.Home{}, fmt.Errorf("db: %w", scrumbus.ErrNotFound)
+			return scrumbus.Scrum{}, fmt.Errorf("db: %w", scrumbus.ErrNotFound)
 		}
-		return scrumbus.Home{}, fmt.Errorf("db: %w", err)
+		return scrumbus.Scrum{}, fmt.Errorf("db: %w", err)
 	}
 
-	return toBusHome(dbHme)
+	return toBusScrum(dbHme)
 }
 
-// QueryByUserID gets the specified home from the database by user id.
-func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]scrumbus.Home, error) {
+// QueryByUserID gets the specified scrum from the database by user id.
+func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]scrumbus.Scrum, error) {
 	data := struct {
 		ID string `db:"user_id"`
 	}{
@@ -203,16 +203,16 @@ func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]scrumbus
 
 	const q = `
 	SELECT
-	    home_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	    scrum_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
 	FROM
-		homes
+		scrums
 	WHERE
 		user_id = :user_id`
 
-	var dbHmes []home
+	var dbHmes []scrum
 	if err := sqldb.NamedQuerySlice(ctx, s.log, s.db, q, data, &dbHmes); err != nil {
 		return nil, fmt.Errorf("db: %w", err)
 	}
 
-	return toBusHomes(dbHmes)
+	return toBusScrums(dbHmes)
 }

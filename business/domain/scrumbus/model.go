@@ -3,7 +3,7 @@ package scrumbus
 import (
 	"time"
 
-	"github.com/angrieralien/scrumdinger/business/types/hometype"
+	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -17,20 +17,20 @@ type Address struct {
 	Country  string
 }
 
-// Home represents an individual home.
-type Home struct {
+// Scrum represents an individual scrum.
+type Scrum struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID
-	Type        hometype.HomeType
+	Type        scrumtype.ScrumType
 	Address     Address
 	DateCreated time.Time
 	DateUpdated time.Time
 }
 
-// NewHome is what we require from clients when adding a Home.
-type NewHome struct {
+// NewScrum is what we require from clients when adding a Scrum.
+type NewScrum struct {
 	UserID  uuid.UUID
-	Type    hometype.HomeType
+	Type    scrumtype.ScrumType
 	Address Address
 }
 
@@ -44,13 +44,13 @@ type UpdateAddress struct {
 	Country  *string
 }
 
-// UpdateHome defines what information may be provided to modify an existing
-// Home. All fields are optional so clients can send only the fields they want
+// UpdateScrum defines what information may be provided to modify an existing
+// Scrum. All fields are optional so clients can send only the fields they want
 // changed. It uses pointer fields so we can differentiate between a field that
 // was not provided and a field that was provided as explicitly blank. Normally
 // we do not want to use pointers to basic types but we make exception around
 // marshalling/unmarshalling.
-type UpdateHome struct {
-	Type    *hometype.HomeType
+type UpdateScrum struct {
+	Type    *scrumtype.ScrumType
 	Address *UpdateAddress
 }

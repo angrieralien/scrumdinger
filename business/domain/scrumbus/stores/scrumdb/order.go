@@ -1,4 +1,4 @@
-package homedb
+package scrumdb
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 var orderByFields = map[string]string{
-	scrumbus.OrderByID:     "home_id",
+	scrumbus.OrderByID:     "scrum_id",
 	scrumbus.OrderByType:   "type",
 	scrumbus.OrderByUserID: "user_id",
 }

@@ -10,7 +10,7 @@ import (
 // User represents an app user specified for the test.
 type User struct {
 	userbus.User
-	Homes []scrumbus.Home
+	Scrums []scrumbus.Scrum
 }
 
 // SeedData represents data that was seeded for the test.

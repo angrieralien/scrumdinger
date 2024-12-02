@@ -1,16 +1,16 @@
-package homedb
+package scrumdb
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/types/hometype"
+	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
-type home struct {
-	ID          uuid.UUID `db:"home_id"`
+type scrum struct {
+	ID          uuid.UUID `db:"scrum_id"`
 	UserID      uuid.UUID `db:"user_id"`
 	Type        string    `db:"type"`
 	Address1    string    `db:"address_1"`
@@ -23,8 +23,8 @@ type home struct {
 	DateUpdated time.Time `db:"date_updated"`
 }
 
-func toDBHome(bus scrumbus.Home) home {
-	db := home{
+func toDBScrum(bus scrumbus.Scrum) scrum {
+	db := scrum{
 		ID:          bus.ID,
 		UserID:      bus.UserID,
 		Type:        bus.Type.String(),
@@ -41,13 +41,13 @@ func toDBHome(bus scrumbus.Home) home {
 	return db
 }
 
-func toBusHome(db home) (scrumbus.Home, error) {
-	typ, err := hometype.Parse(db.Type)
+func toBusScrum(db scrum) (scrumbus.Scrum, error) {
+	typ, err := scrumtype.Parse(db.Type)
 	if err != nil {
-		return scrumbus.Home{}, fmt.Errorf("parse type: %w", err)
+		return scrumbus.Scrum{}, fmt.Errorf("parse type: %w", err)
 	}
 
-	bus := scrumbus.Home{
+	bus := scrumbus.Scrum{
 		ID:     db.ID,
 		UserID: db.UserID,
 		Type:   typ,
@@ -66,12 +66,12 @@ func toBusHome(db home) (scrumbus.Home, error) {
 	return bus, nil
 }
 
-func toBusHomes(dbs []home) ([]scrumbus.Home, error) {
-	bus := make([]scrumbus.Home, len(dbs))
+func toBusScrums(dbs []scrum) ([]scrumbus.Scrum, error) {
+	bus := make([]scrumbus.Scrum, len(dbs))
 
 	for i, db := range dbs {
 		var err error
-		bus[i], err = toBusHome(db)
+		bus[i], err = toBusScrum(db)
 		if err != nil {
 			return nil, fmt.Errorf("parse type: %w", err)
 		}

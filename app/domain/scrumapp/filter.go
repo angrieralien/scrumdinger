@@ -6,7 +6,7 @@ import (
 
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/types/hometype"
+	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -17,7 +17,7 @@ func parseQueryParams(r *http.Request) queryParams {
 		Page:             values.Get("page"),
 		Rows:             values.Get("row"),
 		OrderBy:          values.Get("orderBy"),
-		ID:               values.Get("home_id"),
+		ID:               values.Get("scrum_id"),
 		UserID:           values.Get("user_id"),
 		Type:             values.Get("type"),
 		StartCreatedDate: values.Get("start_created_date"),
@@ -33,7 +33,7 @@ func parseFilter(qp queryParams) (scrumbus.QueryFilter, error) {
 	if qp.ID != "" {
 		id, err := uuid.Parse(qp.ID)
 		if err != nil {
-			return scrumbus.QueryFilter{}, errs.NewFieldsError("home_id", err)
+			return scrumbus.QueryFilter{}, errs.NewFieldsError("scrum_id", err)
 		}
 		filter.ID = &id
 	}
@@ -47,7 +47,7 @@ func parseFilter(qp queryParams) (scrumbus.QueryFilter, error) {
 	}
 
 	if qp.Type != "" {
-		typ, err := hometype.Parse(qp.Type)
+		typ, err := scrumtype.Parse(qp.Type)
 		if err != nil {
 			return scrumbus.QueryFilter{}, errs.NewFieldsError("type", err)
 		}

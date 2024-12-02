@@ -1,4 +1,4 @@
-package home_test
+package scrum_test
 
 import (
 	"testing"
@@ -6,10 +6,10 @@ import (
 	"github.com/angrieralien/scrumdinger/app/sdk/apitest"
 )
 
-func Test_Home(t *testing.T) {
+func Test_Scrum(t *testing.T) {
 	t.Parallel()
 
-	test := apitest.New(t, "Test_Home")
+	test := apitest.New(t, "Test_Scrum")
 
 	// -------------------------------------------------------------------------
 

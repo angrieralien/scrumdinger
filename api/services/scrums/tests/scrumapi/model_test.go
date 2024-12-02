@@ -1,4 +1,4 @@
-package home_test
+package scrum_test
 
 import (
 	"time"
@@ -7,8 +7,8 @@ import (
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 )
 
-func toAppHome(hme scrumbus.Home) scrumapp.Home {
-	return scrumapp.Home{
+func toAppScrum(hme scrumbus.Scrum) scrumapp.Scrum {
+	return scrumapp.Scrum{
 		ID:     hme.ID.String(),
 		UserID: hme.UserID.String(),
 		Type:   hme.Type.String(),
@@ -25,16 +25,16 @@ func toAppHome(hme scrumbus.Home) scrumapp.Home {
 	}
 }
 
-func toAppHomes(homes []scrumbus.Home) []scrumapp.Home {
-	items := make([]scrumapp.Home, len(homes))
-	for i, hme := range homes {
-		items[i] = toAppHome(hme)
+func toAppScrums(scrums []scrumbus.Scrum) []scrumapp.Scrum {
+	items := make([]scrumapp.Scrum, len(scrums))
+	for i, hme := range scrums {
+		items[i] = toAppScrum(hme)
 	}
 
 	return items
 }
 
-func toAppHomePtr(hme scrumbus.Home) *scrumapp.Home {
-	appHme := toAppHome(hme)
+func toAppScrumPtr(hme scrumbus.Scrum) *scrumapp.Scrum {
+	appHme := toAppScrum(hme)
 	return &appHme
 }

@@ -1,4 +1,4 @@
-package home_test
+package scrum_test
 
 import (
 	"fmt"
@@ -13,14 +13,14 @@ func delete200(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "asuser",
-			URL:        fmt.Sprintf("/v1/homes/%s", sd.Users[0].Homes[0].ID),
+			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[0].ID),
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodDelete,
 			StatusCode: http.StatusNoContent,
 		},
 		{
 			Name:       "asadmin",
-			URL:        fmt.Sprintf("/v1/homes/%s", sd.Admins[0].Homes[0].ID),
+			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Admins[0].Scrums[0].ID),
 			Token:      sd.Admins[0].Token,
 			Method:     http.MethodDelete,
 			StatusCode: http.StatusNoContent,
@@ -34,7 +34,7 @@ func delete401(sd apitest.SeedData) []apitest.Table {
 	table := []apitest.Table{
 		{
 			Name:       "emptytoken",
-			URL:        fmt.Sprintf("/v1/homes/%s", sd.Users[0].Homes[1].ID),
+			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[1].ID),
 			Token:      "&nbsp;",
 			Method:     http.MethodDelete,
 			StatusCode: http.StatusUnauthorized,
@@ -46,7 +46,7 @@ func delete401(sd apitest.SeedData) []apitest.Table {
 		},
 		{
 			Name:       "badsig",
-			URL:        fmt.Sprintf("/v1/homes/%s", sd.Users[0].Homes[1].ID),
+			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[1].ID),
 			Token:      sd.Users[0].Token + "A",
 			Method:     http.MethodDelete,
 			StatusCode: http.StatusUnauthorized,
@@ -58,7 +58,7 @@ func delete401(sd apitest.SeedData) []apitest.Table {
 		},
 		{
 			Name:       "wronguser",
-			URL:        fmt.Sprintf("/v1/homes/%s", sd.Users[0].Homes[1].ID),
+			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[1].ID),
 			Token:      sd.Users[1].Token,
 			Method:     http.MethodDelete,
 			StatusCode: http.StatusUnauthorized,

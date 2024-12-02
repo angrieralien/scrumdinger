@@ -1,4 +1,4 @@
-// Package scrumbus provides business access to home domain.
+// Package scrumbus provides business access to scrum domain.
 package scrumbus
 
 import (
@@ -19,7 +19,7 @@ import (
 
 // Set of error variables for CRUD operations.
 var (
-	ErrNotFound     = errors.New("home not found")
+	ErrNotFound     = errors.New("scrum not found")
 	ErrUserDisabled = errors.New("user disabled")
 )
 
@@ -27,16 +27,16 @@ var (
 // retrieve data.
 type Storer interface {
 	NewWithTx(tx sqldb.CommitRollbacker) (Storer, error)
-	Create(ctx context.Context, hme Home) error
-	Update(ctx context.Context, hme Home) error
-	Delete(ctx context.Context, hme Home) error
-	Query(ctx context.Context, filter QueryFilter, orderBy order.By, page page.Page) ([]Home, error)
+	Create(ctx context.Context, hme Scrum) error
+	Update(ctx context.Context, hme Scrum) error
+	Delete(ctx context.Context, hme Scrum) error
+	Query(ctx context.Context, filter QueryFilter, orderBy order.By, page page.Page) ([]Scrum, error)
 	Count(ctx context.Context, filter QueryFilter) (int, error)
-	QueryByID(ctx context.Context, homeID uuid.UUID) (Home, error)
-	QueryByUserID(ctx context.Context, userID uuid.UUID) ([]Home, error)
+	QueryByID(ctx context.Context, scrumID uuid.UUID) (Scrum, error)
+	QueryByUserID(ctx context.Context, userID uuid.UUID) ([]Scrum, error)
 }
 
-// Business manages the set of APIs for home api access.
+// Business manages the set of APIs for scrum api access.
 type Business struct {
 	log      *logger.Logger
 	userBus  *userbus.Business
@@ -44,7 +44,7 @@ type Business struct {
 	storer   Storer
 }
 
-// NewBusiness constructs a home business API for use.
+// NewBusiness constructs a scrum business API for use.
 func NewBusiness(log *logger.Logger, userBus *userbus.Business, delegate *delegate.Delegate, storer Storer) *Business {
 	return &Business{
 		log:      log,
@@ -77,23 +77,23 @@ func (b *Business) NewWithTx(tx sqldb.CommitRollbacker) (*Business, error) {
 	return &bus, nil
 }
 
-// Create adds a new home to the system.
-func (b *Business) Create(ctx context.Context, nh NewHome) (Home, error) {
+// Create adds a new scrum to the system.
+func (b *Business) Create(ctx context.Context, nh NewScrum) (Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.create")
 	defer span.End()
 
 	usr, err := b.userBus.QueryByID(ctx, nh.UserID)
 	if err != nil {
-		return Home{}, fmt.Errorf("user.querybyid: %s: %w", nh.UserID, err)
+		return Scrum{}, fmt.Errorf("user.querybyid: %s: %w", nh.UserID, err)
 	}
 
 	if !usr.Enabled {
-		return Home{}, ErrUserDisabled
+		return Scrum{}, ErrUserDisabled
 	}
 
 	now := time.Now()
 
-	hme := Home{
+	hme := Scrum{
 		ID:   uuid.New(),
 		Type: nh.Type,
 		Address: Address{
@@ -110,14 +110,14 @@ func (b *Business) Create(ctx context.Context, nh NewHome) (Home, error) {
 	}
 
 	if err := b.storer.Create(ctx, hme); err != nil {
-		return Home{}, fmt.Errorf("create: %w", err)
+		return Scrum{}, fmt.Errorf("create: %w", err)
 	}
 
 	return hme, nil
 }
 
-// Update modifies information about a home.
-func (b *Business) Update(ctx context.Context, hme Home, uh UpdateHome) (Home, error) {
+// Update modifies information about a scrum.
+func (b *Business) Update(ctx context.Context, hme Scrum, uh UpdateScrum) (Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.update")
 	defer span.End()
 
@@ -154,14 +154,14 @@ func (b *Business) Update(ctx context.Context, hme Home, uh UpdateHome) (Home, e
 	hme.DateUpdated = time.Now()
 
 	if err := b.storer.Update(ctx, hme); err != nil {
-		return Home{}, fmt.Errorf("update: %w", err)
+		return Scrum{}, fmt.Errorf("update: %w", err)
 	}
 
 	return hme, nil
 }
 
-// Delete removes the specified home.
-func (b *Business) Delete(ctx context.Context, hme Home) error {
+// Delete removes the specified scrum.
+func (b *Business) Delete(ctx context.Context, hme Scrum) error {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.delete")
 	defer span.End()
 
@@ -172,8 +172,8 @@ func (b *Business) Delete(ctx context.Context, hme Home) error {
 	return nil
 }
 
-// Query retrieves a list of existing homes.
-func (b *Business) Query(ctx context.Context, filter QueryFilter, orderBy order.By, page page.Page) ([]Home, error) {
+// Query retrieves a list of existing scrums.
+func (b *Business) Query(ctx context.Context, filter QueryFilter, orderBy order.By, page page.Page) ([]Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.query")
 	defer span.End()
 
@@ -185,7 +185,7 @@ func (b *Business) Query(ctx context.Context, filter QueryFilter, orderBy order.
 	return hmes, nil
 }
 
-// Count returns the total number of homes.
+// Count returns the total number of scrums.
 func (b *Business) Count(ctx context.Context, filter QueryFilter) (int, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.count")
 	defer span.End()
@@ -193,21 +193,21 @@ func (b *Business) Count(ctx context.Context, filter QueryFilter) (int, error) {
 	return b.storer.Count(ctx, filter)
 }
 
-// QueryByID finds the home by the specified ID.
-func (b *Business) QueryByID(ctx context.Context, homeID uuid.UUID) (Home, error) {
+// QueryByID finds the scrum by the specified ID.
+func (b *Business) QueryByID(ctx context.Context, scrumID uuid.UUID) (Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.querybyid")
 	defer span.End()
 
-	hme, err := b.storer.QueryByID(ctx, homeID)
+	hme, err := b.storer.QueryByID(ctx, scrumID)
 	if err != nil {
-		return Home{}, fmt.Errorf("query: homeID[%s]: %w", homeID, err)
+		return Scrum{}, fmt.Errorf("query: scrumID[%s]: %w", scrumID, err)
 	}
 
 	return hme, nil
 }
 
-// QueryByUserID finds the homes by a specified User ID.
-func (b *Business) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]Home, error) {
+// QueryByUserID finds the scrums by a specified User ID.
+func (b *Business) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.querybyuserid")
 	defer span.End()
 

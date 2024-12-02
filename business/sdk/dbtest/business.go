@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/domain/scrumbus/stores/homedb"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus/stores/scrumdb"
 
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/usercache"
@@ -18,18 +18,18 @@ import (
 // BusDomain represents all the business domain apis needed for testing.
 type BusDomain struct {
 	Delegate *delegate.Delegate
-	Home     *scrumbus.Business
+	Scrum    *scrumbus.Business
 	User     *userbus.Business
 }
 
 func newBusDomains(log *logger.Logger, db *sqlx.DB) BusDomain {
 	delegate := delegate.New(log)
 	userBus := userbus.NewBusiness(log, delegate, usercache.NewStore(log, userdb.NewStore(log, db), time.Hour))
-	homeBus := scrumbus.NewBusiness(log, userBus, delegate, homedb.NewStore(log, db))
+	scrumBus := scrumbus.NewBusiness(log, userBus, delegate, scrumdb.NewStore(log, db))
 
 	return BusDomain{
 		Delegate: delegate,
-		Home:     homeBus,
+		Scrum:    scrumBus,
 		User:     userBus,
 	}
 }

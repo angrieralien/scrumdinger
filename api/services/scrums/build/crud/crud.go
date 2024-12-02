@@ -9,7 +9,7 @@ import (
 	"github.com/angrieralien/scrumdinger/app/domain/userapp"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
-	"github.com/angrieralien/scrumdinger/business/domain/scrumbus/stores/homedb"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus/stores/scrumdb"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/usercache"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/userdb"
@@ -32,7 +32,7 @@ func (add) Add(app *web.App, cfg mux.Config) {
 	// sames instances for the different set of domain apis.
 	delegate := delegate.New(cfg.Log)
 	userBus := userbus.NewBusiness(cfg.Log, delegate, usercache.NewStore(cfg.Log, userdb.NewStore(cfg.Log, cfg.DB), time.Minute))
-	homeBus := scrumbus.NewBusiness(cfg.Log, userBus, delegate, homedb.NewStore(cfg.Log, cfg.DB))
+	scrumBus := scrumbus.NewBusiness(cfg.Log, userBus, delegate, scrumdb.NewStore(cfg.Log, cfg.DB))
 
 	checkapp.Routes(app, checkapp.Config{
 		Build: cfg.Build,
@@ -42,7 +42,7 @@ func (add) Add(app *web.App, cfg mux.Config) {
 
 	scrumapp.Routes(app, scrumapp.Config{
 		UserBus:    userBus,
-		HomeBus:    homeBus,
+		ScrumBus:   scrumBus,
 		AuthClient: cfg.AuthClient,
 	})
 
