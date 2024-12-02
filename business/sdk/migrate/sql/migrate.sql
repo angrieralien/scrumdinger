@@ -20,7 +20,7 @@ CREATE TABLE scrums (
     name TEXT NOT NULL,
     time INTEGER NOT NULL,
     color TEXT NOT NULL,
-    attendees TEXT [] NULL,
+    attendees TEXT NULL,
     type TEXT NOT NULL,
     user_id UUID NOT NULL,
     address_1 TEXT NOT NULL,

@@ -2,6 +2,7 @@ package scrumdb
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
@@ -13,10 +14,10 @@ type scrum struct {
 	ID     uuid.UUID `db:"scrum_id"`
 	UserID uuid.UUID `db:"user_id"`
 
-	Name      string   `db:"name"`
-	Time      int      `db:"time"`
-	Color     string   `db:"color"`
-	Attendees []string `db:"attendees"`
+	Name      string `db:"name"`
+	Time      int    `db:"time"`
+	Color     string `db:"color"`
+	Attendees string `db:"attendees"`
 
 	Type        string    `db:"type"`
 	Address1    string    `db:"address_1"`
@@ -37,7 +38,7 @@ func toDBScrum(bus scrumbus.Scrum) scrum {
 		Name:      bus.Name,
 		Time:      bus.Time,
 		Color:     bus.Color,
-		Attendees: bus.Attendees,
+		Attendees: strings.Join(bus.Attendees, "\t"),
 
 		Type:        bus.Type.String(),
 		Address1:    bus.Address.Address1,
@@ -60,9 +61,13 @@ func toBusScrum(db scrum) (scrumbus.Scrum, error) {
 	}
 
 	bus := scrumbus.Scrum{
-		ID:     db.ID,
-		UserID: db.UserID,
-		Type:   typ,
+		ID:        db.ID,
+		Name:      db.Name,
+		Time:      db.Time,
+		Color:     db.Color,
+		Attendees: strings.Split(db.Attendees, "\t"),
+		UserID:    db.UserID,
+		Type:      typ,
 		Address: scrumbus.Address{
 			Address1: db.Address1,
 			Address2: db.Address2,

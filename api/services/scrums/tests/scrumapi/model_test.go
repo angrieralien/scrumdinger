@@ -7,21 +7,26 @@ import (
 	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 )
 
-func toAppScrum(hme scrumbus.Scrum) scrumapp.Scrum {
+func toAppScrum(scrum scrumbus.Scrum) scrumapp.Scrum {
 	return scrumapp.Scrum{
-		ID:     hme.ID.String(),
-		UserID: hme.UserID.String(),
-		Type:   hme.Type.String(),
+		ID:        scrum.ID.String(),
+		UserID:    scrum.UserID.String(),
+		Name:      scrum.Name,
+		Time:      scrum.Time,
+		Color:     scrum.Color,
+		Attendees: scrum.Attendees,
+
+		Type: scrum.Type.String(),
 		Address: scrumapp.Address{
-			Address1: hme.Address.Address1,
-			Address2: hme.Address.Address2,
-			ZipCode:  hme.Address.ZipCode,
-			City:     hme.Address.City,
-			State:    hme.Address.State,
-			Country:  hme.Address.Country,
+			Address1: scrum.Address.Address1,
+			Address2: scrum.Address.Address2,
+			ZipCode:  scrum.Address.ZipCode,
+			City:     scrum.Address.City,
+			State:    scrum.Address.State,
+			Country:  scrum.Address.Country,
 		},
-		DateCreated: hme.DateCreated.Format(time.RFC3339),
-		DateUpdated: hme.DateUpdated.Format(time.RFC3339),
+		DateCreated: scrum.DateCreated.Format(time.RFC3339),
+		DateUpdated: scrum.DateUpdated.Format(time.RFC3339),
 	}
 }
 

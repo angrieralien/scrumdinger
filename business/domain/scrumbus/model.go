@@ -65,7 +65,7 @@ type UpdateScrum struct {
 	Name      *string
 	Time      *int
 	Color     *string
-	Attendees *[]string
+	Attendees []string
 
 	Type    *scrumtype.ScrumType
 	Address *UpdateAddress
