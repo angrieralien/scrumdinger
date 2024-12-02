@@ -8,10 +8,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/ardanlabs/conf/v3"
 	"github.com/angrieralien/scrumdinger/api/tooling/admin/commands"
 	"github.com/angrieralien/scrumdinger/business/sdk/sqldb"
 	"github.com/angrieralien/scrumdinger/foundation/logger"
+	"github.com/ardanlabs/conf/v3"
 	"github.com/google/uuid"
 )
 
@@ -54,7 +54,7 @@ func run(log *logger.Logger) error {
 		},
 	}
 
-	const prefix = "SALES"
+	const prefix = "SCRUMDINGER"
 	help, err := conf.Parse(prefix, &cfg)
 	if err != nil {
 		if errors.Is(err, conf.ErrHelpWanted) {

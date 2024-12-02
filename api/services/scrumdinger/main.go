@@ -13,9 +13,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/angrieralien/scrumdinger/api/services/scrums/build/all"
-	"github.com/angrieralien/scrumdinger/api/services/scrums/build/crud"
-	"github.com/angrieralien/scrumdinger/api/services/scrums/build/reporting"
+	"github.com/angrieralien/scrumdinger/api/services/scrumdinger/build/all"
+	"github.com/angrieralien/scrumdinger/api/services/scrumdinger/build/crud"
+	"github.com/angrieralien/scrumdinger/api/services/scrumdinger/build/reporting"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/debug"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
@@ -48,7 +48,7 @@ func main() {
 		return otel.GetTraceID(ctx)
 	}
 
-	log = logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events)
+	log = logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SCRUMDINGER", traceIDFn, events)
 
 	// -------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 		}
 		Tempo struct {
 			Host        string  `conf:"default:tempo:4317"`
-			ServiceName string  `conf:"default:sales"`
+			ServiceName string  `conf:"default:scrumdinger"`
 			Probability float64 `conf:"default:0.05"`
 			// Shouldn't use a high Probability value in non-developer systems.
 			// 0.05 should be enough for most systems. Some might want to have
@@ -108,7 +108,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 		},
 	}
 
-	const prefix = "SALES"
+	const prefix = "SCRUMDINGER"
 	help, err := conf.Parse(prefix, &cfg)
 	if err != nil {
 		if errors.Is(err, conf.ErrHelpWanted) {
