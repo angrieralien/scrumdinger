@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 )
 
-func (s *Store) applyFilter(filter homebus.QueryFilter, data map[string]any, buf *bytes.Buffer) {
+func (s *Store) applyFilter(filter scrumbus.QueryFilter, data map[string]any, buf *bytes.Buffer) {
 	var wc []string
 
 	if filter.ID != nil {

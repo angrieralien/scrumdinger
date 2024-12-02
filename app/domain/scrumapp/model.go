@@ -1,4 +1,4 @@
-package homeapp
+package scrumapp
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/angrieralien/scrumdinger/app/sdk/mid"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/types/hometype"
 )
 
@@ -51,7 +51,7 @@ func (app Home) Encode() ([]byte, string, error) {
 	return data, "application/json", err
 }
 
-func toAppHome(hme homebus.Home) Home {
+func toAppHome(hme scrumbus.Home) Home {
 	return Home{
 		ID:     hme.ID.String(),
 		UserID: hme.UserID.String(),
@@ -69,7 +69,7 @@ func toAppHome(hme homebus.Home) Home {
 	}
 }
 
-func toAppHomes(homes []homebus.Home) []Home {
+func toAppHomes(homes []scrumbus.Home) []Home {
 	app := make([]Home, len(homes))
 	for i, hme := range homes {
 		app[i] = toAppHome(hme)
@@ -110,21 +110,21 @@ func (app NewHome) Validate() error {
 	return nil
 }
 
-func toBusNewHome(ctx context.Context, app NewHome) (homebus.NewHome, error) {
+func toBusNewHome(ctx context.Context, app NewHome) (scrumbus.NewHome, error) {
 	userID, err := mid.GetUserID(ctx)
 	if err != nil {
-		return homebus.NewHome{}, fmt.Errorf("getuserid: %w", err)
+		return scrumbus.NewHome{}, fmt.Errorf("getuserid: %w", err)
 	}
 
 	typ, err := hometype.Parse(app.Type)
 	if err != nil {
-		return homebus.NewHome{}, fmt.Errorf("parse: %w", err)
+		return scrumbus.NewHome{}, fmt.Errorf("parse: %w", err)
 	}
 
-	bus := homebus.NewHome{
+	bus := scrumbus.NewHome{
 		UserID: userID,
 		Type:   typ,
-		Address: homebus.Address{
+		Address: scrumbus.Address{
 			Address1: app.Address.Address1,
 			Address2: app.Address.Address2,
 			ZipCode:  app.Address.ZipCode,
@@ -169,22 +169,22 @@ func (app UpdateHome) Validate() error {
 	return nil
 }
 
-func toBusUpdateHome(app UpdateHome) (homebus.UpdateHome, error) {
+func toBusUpdateHome(app UpdateHome) (scrumbus.UpdateHome, error) {
 	var t hometype.HomeType
 	if app.Type != nil {
 		var err error
 		t, err = hometype.Parse(*app.Type)
 		if err != nil {
-			return homebus.UpdateHome{}, fmt.Errorf("parse: %w", err)
+			return scrumbus.UpdateHome{}, fmt.Errorf("parse: %w", err)
 		}
 	}
 
-	bus := homebus.UpdateHome{
+	bus := scrumbus.UpdateHome{
 		Type: &t,
 	}
 
 	if app.Address != nil {
-		bus.Address = &homebus.UpdateAddress{
+		bus.Address = &scrumbus.UpdateAddress{
 			Address1: app.Address.Address1,
 			Address2: app.Address.Address2,
 			ZipCode:  app.Address.ZipCode,

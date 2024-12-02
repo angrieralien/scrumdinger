@@ -3,7 +3,7 @@ package home_test
 import (
 	"net/http"
 
-	"github.com/angrieralien/scrumdinger/app/domain/homeapp"
+	"github.com/angrieralien/scrumdinger/app/domain/scrumapp"
 	"github.com/angrieralien/scrumdinger/app/sdk/apitest"
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/google/go-cmp/cmp"
@@ -17,9 +17,9 @@ func create200(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusOK,
-			Input: &homeapp.NewHome{
+			Input: &scrumapp.NewHome{
 				Type: "SINGLE FAMILY",
-				Address: homeapp.NewAddress{
+				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",
 					City:     "Huntsville",
@@ -27,11 +27,11 @@ func create200(sd apitest.SeedData) []apitest.Table {
 					Country:  "US",
 				},
 			},
-			GotResp: &homeapp.Home{},
-			ExpResp: &homeapp.Home{
+			GotResp: &scrumapp.Home{},
+			ExpResp: &scrumapp.Home{
 				UserID: sd.Users[0].ID.String(),
 				Type:   "SINGLE FAMILY",
-				Address: homeapp.Address{
+				Address: scrumapp.Address{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",
 					City:     "Huntsville",
@@ -40,12 +40,12 @@ func create200(sd apitest.SeedData) []apitest.Table {
 				},
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.(*homeapp.Home)
+				gotResp, exists := got.(*scrumapp.Home)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.(*homeapp.Home)
+				expResp := exp.(*scrumapp.Home)
 
 				expResp.ID = gotResp.ID
 				expResp.DateCreated = gotResp.DateCreated
@@ -67,7 +67,7 @@ func create400(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusBadRequest,
-			Input:      &homeapp.NewHome{},
+			Input:      &scrumapp.NewHome{},
 			GotResp:    &errs.Error{},
 			ExpResp:    errs.Newf(errs.InvalidArgument, "validate: [{\"field\":\"type\",\"error\":\"type is a required field\"},{\"field\":\"address1\",\"error\":\"address1 is a required field\"},{\"field\":\"zipCode\",\"error\":\"zipCode is a required field\"},{\"field\":\"city\",\"error\":\"city is a required field\"},{\"field\":\"state\",\"error\":\"state is a required field\"},{\"field\":\"country\",\"error\":\"country is a required field\"}]"),
 			CmpFunc: func(got any, exp any) string {
@@ -80,9 +80,9 @@ func create400(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPost,
 			StatusCode: http.StatusBadRequest,
-			Input: &homeapp.NewHome{
+			Input: &scrumapp.NewHome{
 				Type: "BAD TYPE",
-				Address: homeapp.NewAddress{
+				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",
 					City:     "Huntsville",

@@ -1,4 +1,4 @@
-package homebus_test
+package scrumbus_test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/dbtest"
 	"github.com/angrieralien/scrumdinger/business/sdk/page"
@@ -45,7 +45,7 @@ func insertSeedData(busDomain dbtest.BusDomain) (unitest.SeedData, error) {
 		return unitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err := homebus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
+	hmes, err := scrumbus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
 	if err != nil {
 		return unitest.SeedData{}, fmt.Errorf("seeding homes : %w", err)
 	}
@@ -73,7 +73,7 @@ func insertSeedData(busDomain dbtest.BusDomain) (unitest.SeedData, error) {
 		return unitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err = homebus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
+	hmes, err = scrumbus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
 	if err != nil {
 		return unitest.SeedData{}, fmt.Errorf("seeding homes : %w", err)
 	}
@@ -107,7 +107,7 @@ func insertSeedData(busDomain dbtest.BusDomain) (unitest.SeedData, error) {
 // =============================================================================
 
 func query(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
-	hmes := make([]homebus.Home, 0, len(sd.Admins[0].Homes)+len(sd.Users[0].Homes))
+	hmes := make([]scrumbus.Home, 0, len(sd.Admins[0].Homes)+len(sd.Users[0].Homes))
 	hmes = append(hmes, sd.Admins[0].Homes...)
 	hmes = append(hmes, sd.Users[0].Homes...)
 
@@ -120,7 +120,7 @@ func query(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 			Name:    "all",
 			ExpResp: hmes,
 			ExcFunc: func(ctx context.Context) any {
-				resp, err := busDomain.Home.Query(ctx, homebus.QueryFilter{}, homebus.DefaultOrderBy, page.MustParse("1", "10"))
+				resp, err := busDomain.Home.Query(ctx, scrumbus.QueryFilter{}, scrumbus.DefaultOrderBy, page.MustParse("1", "10"))
 				if err != nil {
 					return err
 				}
@@ -128,12 +128,12 @@ func query(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 				return resp
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.([]homebus.Home)
+				gotResp, exists := got.([]scrumbus.Home)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.([]homebus.Home)
+				expResp := exp.([]scrumbus.Home)
 
 				for i := range gotResp {
 					if gotResp[i].DateCreated.Format(time.RFC3339) == expResp[i].DateCreated.Format(time.RFC3339) {
@@ -160,12 +160,12 @@ func query(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 				return resp
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.(homebus.Home)
+				gotResp, exists := got.(scrumbus.Home)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.(homebus.Home)
+				expResp := exp.(scrumbus.Home)
 
 				if gotResp.DateCreated.Format(time.RFC3339) == expResp.DateCreated.Format(time.RFC3339) {
 					expResp.DateCreated = gotResp.DateCreated
@@ -187,10 +187,10 @@ func create(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 	table := []unitest.Table{
 		{
 			Name: "basic",
-			ExpResp: homebus.Home{
+			ExpResp: scrumbus.Home{
 				UserID: sd.Users[0].ID,
 				Type:   hometype.Single,
-				Address: homebus.Address{
+				Address: scrumbus.Address{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",
 					City:     "Huntsville",
@@ -199,10 +199,10 @@ func create(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 				},
 			},
 			ExcFunc: func(ctx context.Context) any {
-				nh := homebus.NewHome{
+				nh := scrumbus.NewHome{
 					UserID: sd.Users[0].ID,
 					Type:   hometype.Single,
-					Address: homebus.Address{
+					Address: scrumbus.Address{
 						Address1: "123 Mocking Bird Lane",
 						ZipCode:  "35810",
 						City:     "Huntsville",
@@ -219,12 +219,12 @@ func create(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 				return resp
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.(homebus.Home)
+				gotResp, exists := got.(scrumbus.Home)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.(homebus.Home)
+				expResp := exp.(scrumbus.Home)
 
 				expResp.ID = gotResp.ID
 				expResp.DateCreated = gotResp.DateCreated
@@ -242,11 +242,11 @@ func update(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 	table := []unitest.Table{
 		{
 			Name: "basic",
-			ExpResp: homebus.Home{
+			ExpResp: scrumbus.Home{
 				ID:     sd.Users[0].Homes[0].ID,
 				UserID: sd.Users[0].ID,
 				Type:   hometype.Single,
-				Address: homebus.Address{
+				Address: scrumbus.Address{
 					Address1: "123 Mocking Bird Lane",
 					Address2: "apt 105",
 					ZipCode:  "35810",
@@ -258,9 +258,9 @@ func update(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 				DateUpdated: sd.Users[0].Homes[0].DateCreated,
 			},
 			ExcFunc: func(ctx context.Context) any {
-				uh := homebus.UpdateHome{
+				uh := scrumbus.UpdateHome{
 					Type: &hometype.Single,
-					Address: &homebus.UpdateAddress{
+					Address: &scrumbus.UpdateAddress{
 						Address1: dbtest.StringPointer("123 Mocking Bird Lane"),
 						Address2: dbtest.StringPointer("apt 105"),
 						ZipCode:  dbtest.StringPointer("35810"),
@@ -280,12 +280,12 @@ func update(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
 				return resp
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.(homebus.Home)
+				gotResp, exists := got.(scrumbus.Home)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.(homebus.Home)
+				expResp := exp.(scrumbus.Home)
 
 				expResp.DateUpdated = gotResp.DateUpdated
 

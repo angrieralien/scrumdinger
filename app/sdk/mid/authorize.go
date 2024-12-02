@@ -9,7 +9,7 @@ import (
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/foundation/web"
 	"github.com/google/uuid"
@@ -106,7 +106,7 @@ func AuthorizeUser(client *authclient.Client, userBus *userbus.Business, rule st
 // home from the DB if a home id is specified in the call. Depending on
 // the rule specified, the userid from the claims may be compared with the
 // specified user id from the home.
-func AuthorizeHome(client *authclient.Client, homeBus *homebus.Business) web.MidFunc {
+func AuthorizeHome(client *authclient.Client, homeBus *scrumbus.Business) web.MidFunc {
 	m := func(next web.HandlerFunc) web.HandlerFunc {
 		h := func(ctx context.Context, r *http.Request) web.Encoder {
 			id := web.Param(r, "home_id")
@@ -123,7 +123,7 @@ func AuthorizeHome(client *authclient.Client, homeBus *homebus.Business) web.Mid
 				hme, err := homeBus.QueryByID(ctx, homeID)
 				if err != nil {
 					switch {
-					case errors.Is(err, homebus.ErrNotFound):
+					case errors.Is(err, scrumbus.ErrNotFound):
 						return errs.New(errs.Unauthenticated, err)
 					default:
 						return errs.Newf(errs.Unauthenticated, "querybyid: homeID[%s]: %s", homeID, err)

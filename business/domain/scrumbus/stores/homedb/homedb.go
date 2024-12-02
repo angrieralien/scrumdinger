@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/order"
 	"github.com/angrieralien/scrumdinger/business/sdk/page"
 	"github.com/angrieralien/scrumdinger/business/sdk/sqldb"
@@ -32,7 +32,7 @@ func NewStore(log *logger.Logger, db *sqlx.DB) *Store {
 
 // NewWithTx constructs a new Store value replacing the sqlx DB
 // value with a sqlx DB value that is currently inside a transaction.
-func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (homebus.Storer, error) {
+func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (scrumbus.Storer, error) {
 	ec, err := sqldb.GetExtContext(tx)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (homebus.Storer, error) {
 }
 
 // Create inserts a new home into the database.
-func (s *Store) Create(ctx context.Context, hme homebus.Home) error {
+func (s *Store) Create(ctx context.Context, hme scrumbus.Home) error {
 	const q = `
     INSERT INTO homes
         (home_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated)
@@ -62,7 +62,7 @@ func (s *Store) Create(ctx context.Context, hme homebus.Home) error {
 }
 
 // Delete removes a home from the database.
-func (s *Store) Delete(ctx context.Context, hme homebus.Home) error {
+func (s *Store) Delete(ctx context.Context, hme scrumbus.Home) error {
 	data := struct {
 		ID string `db:"home_id"`
 	}{
@@ -83,7 +83,7 @@ func (s *Store) Delete(ctx context.Context, hme homebus.Home) error {
 }
 
 // Update replaces a home document in the database.
-func (s *Store) Update(ctx context.Context, hme homebus.Home) error {
+func (s *Store) Update(ctx context.Context, hme scrumbus.Home) error {
 	const q = `
     UPDATE
         homes
@@ -107,7 +107,7 @@ func (s *Store) Update(ctx context.Context, hme homebus.Home) error {
 }
 
 // Query retrieves a list of existing homes from the database.
-func (s *Store) Query(ctx context.Context, filter homebus.QueryFilter, orderBy order.By, page page.Page) ([]homebus.Home, error) {
+func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy order.By, page page.Page) ([]scrumbus.Home, error) {
 	data := map[string]any{
 		"offset":        (page.Number() - 1) * page.RowsPerPage(),
 		"rows_per_page": page.RowsPerPage(),
@@ -144,7 +144,7 @@ func (s *Store) Query(ctx context.Context, filter homebus.QueryFilter, orderBy o
 }
 
 // Count returns the total number of homes in the DB.
-func (s *Store) Count(ctx context.Context, filter homebus.QueryFilter) (int, error) {
+func (s *Store) Count(ctx context.Context, filter scrumbus.QueryFilter) (int, error) {
 	data := map[string]any{}
 
 	const q = `
@@ -167,7 +167,7 @@ func (s *Store) Count(ctx context.Context, filter homebus.QueryFilter) (int, err
 }
 
 // QueryByID gets the specified home from the database.
-func (s *Store) QueryByID(ctx context.Context, homeID uuid.UUID) (homebus.Home, error) {
+func (s *Store) QueryByID(ctx context.Context, homeID uuid.UUID) (scrumbus.Home, error) {
 	data := struct {
 		ID string `db:"home_id"`
 	}{
@@ -185,16 +185,16 @@ func (s *Store) QueryByID(ctx context.Context, homeID uuid.UUID) (homebus.Home, 
 	var dbHme home
 	if err := sqldb.NamedQueryStruct(ctx, s.log, s.db, q, data, &dbHme); err != nil {
 		if errors.Is(err, sqldb.ErrDBNotFound) {
-			return homebus.Home{}, fmt.Errorf("db: %w", homebus.ErrNotFound)
+			return scrumbus.Home{}, fmt.Errorf("db: %w", scrumbus.ErrNotFound)
 		}
-		return homebus.Home{}, fmt.Errorf("db: %w", err)
+		return scrumbus.Home{}, fmt.Errorf("db: %w", err)
 	}
 
 	return toBusHome(dbHme)
 }
 
 // QueryByUserID gets the specified home from the database by user id.
-func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]homebus.Home, error) {
+func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]scrumbus.Home, error) {
 	data := struct {
 		ID string `db:"user_id"`
 	}{

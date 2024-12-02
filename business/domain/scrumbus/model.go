@@ -1,4 +1,4 @@
-package homebus
+package scrumbus
 
 import (
 	"time"

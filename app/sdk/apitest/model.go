@@ -1,14 +1,14 @@
 package apitest
 
 import (
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 )
 
 // User extends the dbtest user for api test support.
 type User struct {
 	userbus.User
-	Homes []homebus.Home
+	Homes []scrumbus.Home
 	Token string
 }
 

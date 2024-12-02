@@ -1,5 +1,5 @@
-// Package homeapp maintains the app layer api for the home domain.
-package homeapp
+// Package scrumapp maintains the app layer api for the home domain.
+package scrumapp
 
 import (
 	"context"
@@ -8,17 +8,17 @@ import (
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/angrieralien/scrumdinger/app/sdk/mid"
 	"github.com/angrieralien/scrumdinger/app/sdk/query"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/order"
 	"github.com/angrieralien/scrumdinger/business/sdk/page"
 	"github.com/angrieralien/scrumdinger/foundation/web"
 )
 
 type app struct {
-	homeBus *homebus.Business
+	homeBus *scrumbus.Business
 }
 
-func newApp(homeBus *homebus.Business) *app {
+func newApp(homeBus *scrumbus.Business) *app {
 	return &app{
 		homeBus: homeBus,
 	}
@@ -93,7 +93,7 @@ func (a *app) query(ctx context.Context, r *http.Request) web.Encoder {
 		return err.(errs.FieldErrors)
 	}
 
-	orderBy, err := order.Parse(orderByFields, qp.OrderBy, homebus.DefaultOrderBy)
+	orderBy, err := order.Parse(orderByFields, qp.OrderBy, scrumbus.DefaultOrderBy)
 	if err != nil {
 		return errs.NewFieldsError("order", err)
 	}

@@ -1,11 +1,11 @@
-package homeapp
+package scrumapp
 
 import (
 	"net/http"
 	"time"
 
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/types/hometype"
 	"github.com/google/uuid"
 )
@@ -27,13 +27,13 @@ func parseQueryParams(r *http.Request) queryParams {
 	return filter
 }
 
-func parseFilter(qp queryParams) (homebus.QueryFilter, error) {
-	var filter homebus.QueryFilter
+func parseFilter(qp queryParams) (scrumbus.QueryFilter, error) {
+	var filter scrumbus.QueryFilter
 
 	if qp.ID != "" {
 		id, err := uuid.Parse(qp.ID)
 		if err != nil {
-			return homebus.QueryFilter{}, errs.NewFieldsError("home_id", err)
+			return scrumbus.QueryFilter{}, errs.NewFieldsError("home_id", err)
 		}
 		filter.ID = &id
 	}
@@ -41,7 +41,7 @@ func parseFilter(qp queryParams) (homebus.QueryFilter, error) {
 	if qp.UserID != "" {
 		id, err := uuid.Parse(qp.UserID)
 		if err != nil {
-			return homebus.QueryFilter{}, errs.NewFieldsError("user_id", err)
+			return scrumbus.QueryFilter{}, errs.NewFieldsError("user_id", err)
 		}
 		filter.UserID = &id
 	}
@@ -49,7 +49,7 @@ func parseFilter(qp queryParams) (homebus.QueryFilter, error) {
 	if qp.Type != "" {
 		typ, err := hometype.Parse(qp.Type)
 		if err != nil {
-			return homebus.QueryFilter{}, errs.NewFieldsError("type", err)
+			return scrumbus.QueryFilter{}, errs.NewFieldsError("type", err)
 		}
 		filter.Type = &typ
 	}
@@ -57,7 +57,7 @@ func parseFilter(qp queryParams) (homebus.QueryFilter, error) {
 	if qp.StartCreatedDate != "" {
 		t, err := time.Parse(time.RFC3339, qp.StartCreatedDate)
 		if err != nil {
-			return homebus.QueryFilter{}, errs.NewFieldsError("start_created_date", err)
+			return scrumbus.QueryFilter{}, errs.NewFieldsError("start_created_date", err)
 		}
 		filter.StartCreatedDate = &t
 	}
@@ -65,7 +65,7 @@ func parseFilter(qp queryParams) (homebus.QueryFilter, error) {
 	if qp.EndCreatedDate != "" {
 		t, err := time.Parse(time.RFC3339, qp.EndCreatedDate)
 		if err != nil {
-			return homebus.QueryFilter{}, errs.NewFieldsError("end_created_date", err)
+			return scrumbus.QueryFilter{}, errs.NewFieldsError("end_created_date", err)
 		}
 		filter.EndCreatedDate = &t
 	}

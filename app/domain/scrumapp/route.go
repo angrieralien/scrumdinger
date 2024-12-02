@@ -1,4 +1,4 @@
-package homeapp
+package scrumapp
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/mid"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/foundation/logger"
 	"github.com/angrieralien/scrumdinger/foundation/web"
@@ -16,7 +16,7 @@ import (
 type Config struct {
 	Log        *logger.Logger
 	UserBus    *userbus.Business
-	HomeBus    *homebus.Business
+	HomeBus    *scrumbus.Business
 	AuthClient *authclient.Client
 }
 

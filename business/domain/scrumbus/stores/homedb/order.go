@@ -3,14 +3,14 @@ package homedb
 import (
 	"fmt"
 
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/order"
 )
 
 var orderByFields = map[string]string{
-	homebus.OrderByID:     "home_id",
-	homebus.OrderByType:   "type",
-	homebus.OrderByUserID: "user_id",
+	scrumbus.OrderByID:     "home_id",
+	scrumbus.OrderByType:   "type",
+	scrumbus.OrderByUserID: "user_id",
 }
 
 func orderByClause(orderBy order.By) (string, error) {

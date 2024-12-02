@@ -1,5 +1,5 @@
-// Package homebus provides business access to home domain.
-package homebus
+// Package scrumbus provides business access to home domain.
+package scrumbus
 
 import (
 	"context"
@@ -79,7 +79,7 @@ func (b *Business) NewWithTx(tx sqldb.CommitRollbacker) (*Business, error) {
 
 // Create adds a new home to the system.
 func (b *Business) Create(ctx context.Context, nh NewHome) (Home, error) {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.create")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.create")
 	defer span.End()
 
 	usr, err := b.userBus.QueryByID(ctx, nh.UserID)
@@ -118,7 +118,7 @@ func (b *Business) Create(ctx context.Context, nh NewHome) (Home, error) {
 
 // Update modifies information about a home.
 func (b *Business) Update(ctx context.Context, hme Home, uh UpdateHome) (Home, error) {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.update")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.update")
 	defer span.End()
 
 	if uh.Type != nil {
@@ -162,7 +162,7 @@ func (b *Business) Update(ctx context.Context, hme Home, uh UpdateHome) (Home, e
 
 // Delete removes the specified home.
 func (b *Business) Delete(ctx context.Context, hme Home) error {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.delete")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.delete")
 	defer span.End()
 
 	if err := b.storer.Delete(ctx, hme); err != nil {
@@ -174,7 +174,7 @@ func (b *Business) Delete(ctx context.Context, hme Home) error {
 
 // Query retrieves a list of existing homes.
 func (b *Business) Query(ctx context.Context, filter QueryFilter, orderBy order.By, page page.Page) ([]Home, error) {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.query")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.query")
 	defer span.End()
 
 	hmes, err := b.storer.Query(ctx, filter, orderBy, page)
@@ -187,7 +187,7 @@ func (b *Business) Query(ctx context.Context, filter QueryFilter, orderBy order.
 
 // Count returns the total number of homes.
 func (b *Business) Count(ctx context.Context, filter QueryFilter) (int, error) {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.count")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.count")
 	defer span.End()
 
 	return b.storer.Count(ctx, filter)
@@ -195,7 +195,7 @@ func (b *Business) Count(ctx context.Context, filter QueryFilter) (int, error) {
 
 // QueryByID finds the home by the specified ID.
 func (b *Business) QueryByID(ctx context.Context, homeID uuid.UUID) (Home, error) {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.querybyid")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.querybyid")
 	defer span.End()
 
 	hme, err := b.storer.QueryByID(ctx, homeID)
@@ -208,7 +208,7 @@ func (b *Business) QueryByID(ctx context.Context, homeID uuid.UUID) (Home, error
 
 // QueryByUserID finds the homes by a specified User ID.
 func (b *Business) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]Home, error) {
-	ctx, span := otel.AddSpan(ctx, "business.homebus.querybyuserid")
+	ctx, span := otel.AddSpan(ctx, "business.scrumbus.querybyuserid")
 	defer span.End()
 
 	hmes, err := b.storer.QueryByUserID(ctx, userID)

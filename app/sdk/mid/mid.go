@@ -6,7 +6,7 @@ import (
 	"errors"
 
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/sqldb"
 	"github.com/angrieralien/scrumdinger/foundation/web"
@@ -76,15 +76,15 @@ func GetUser(ctx context.Context) (userbus.User, error) {
 	return v, nil
 }
 
-func setHome(ctx context.Context, hme homebus.Home) context.Context {
+func setHome(ctx context.Context, hme scrumbus.Home) context.Context {
 	return context.WithValue(ctx, homeKey, hme)
 }
 
 // GetHome returns the home from the context.
-func GetHome(ctx context.Context) (homebus.Home, error) {
-	v, ok := ctx.Value(homeKey).(homebus.Home)
+func GetHome(ctx context.Context) (scrumbus.Home, error) {
+	v, ok := ctx.Value(homeKey).(scrumbus.Home)
 	if !ok {
-		return homebus.Home{}, errors.New("home not found in context")
+		return scrumbus.Home{}, errors.New("home not found in context")
 	}
 
 	return v, nil

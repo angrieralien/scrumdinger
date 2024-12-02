@@ -3,16 +3,16 @@ package home_test
 import (
 	"time"
 
-	"github.com/angrieralien/scrumdinger/app/domain/homeapp"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/app/domain/scrumapp"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 )
 
-func toAppHome(hme homebus.Home) homeapp.Home {
-	return homeapp.Home{
+func toAppHome(hme scrumbus.Home) scrumapp.Home {
+	return scrumapp.Home{
 		ID:     hme.ID.String(),
 		UserID: hme.UserID.String(),
 		Type:   hme.Type.String(),
-		Address: homeapp.Address{
+		Address: scrumapp.Address{
 			Address1: hme.Address.Address1,
 			Address2: hme.Address.Address2,
 			ZipCode:  hme.Address.ZipCode,
@@ -25,8 +25,8 @@ func toAppHome(hme homebus.Home) homeapp.Home {
 	}
 }
 
-func toAppHomes(homes []homebus.Home) []homeapp.Home {
-	items := make([]homeapp.Home, len(homes))
+func toAppHomes(homes []scrumbus.Home) []scrumapp.Home {
+	items := make([]scrumapp.Home, len(homes))
 	for i, hme := range homes {
 		items[i] = toAppHome(hme)
 	}
@@ -34,7 +34,7 @@ func toAppHomes(homes []homebus.Home) []homeapp.Home {
 	return items
 }
 
-func toAppHomePtr(hme homebus.Home) *homeapp.Home {
+func toAppHomePtr(hme scrumbus.Home) *scrumapp.Home {
 	appHme := toAppHome(hme)
 	return &appHme
 }

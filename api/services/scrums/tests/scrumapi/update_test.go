@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/angrieralien/scrumdinger/app/domain/homeapp"
+	"github.com/angrieralien/scrumdinger/app/domain/scrumapp"
 	"github.com/angrieralien/scrumdinger/app/sdk/apitest"
 	"github.com/angrieralien/scrumdinger/app/sdk/errs"
 	"github.com/angrieralien/scrumdinger/business/sdk/dbtest"
@@ -20,9 +20,9 @@ func update200(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPut,
 			StatusCode: http.StatusOK,
-			Input: &homeapp.UpdateHome{
+			Input: &scrumapp.UpdateHome{
 				Type: dbtest.StringPointer("SINGLE FAMILY"),
-				Address: &homeapp.UpdateAddress{
+				Address: &scrumapp.UpdateAddress{
 					Address1: dbtest.StringPointer("123 Mocking Bird Lane"),
 					Address2: dbtest.StringPointer("apt 105"),
 					ZipCode:  dbtest.StringPointer("35810"),
@@ -31,12 +31,12 @@ func update200(sd apitest.SeedData) []apitest.Table {
 					Country:  dbtest.StringPointer("US"),
 				},
 			},
-			GotResp: &homeapp.Home{},
-			ExpResp: &homeapp.Home{
+			GotResp: &scrumapp.Home{},
+			ExpResp: &scrumapp.Home{
 				ID:     sd.Users[0].Homes[0].ID.String(),
 				UserID: sd.Users[0].ID.String(),
 				Type:   "SINGLE FAMILY",
-				Address: homeapp.Address{
+				Address: scrumapp.Address{
 					Address1: "123 Mocking Bird Lane",
 					Address2: "apt 105",
 					ZipCode:  "35810",
@@ -48,12 +48,12 @@ func update200(sd apitest.SeedData) []apitest.Table {
 				DateUpdated: sd.Users[0].Homes[0].DateCreated.Format(time.RFC3339),
 			},
 			CmpFunc: func(got any, exp any) string {
-				gotResp, exists := got.(*homeapp.Home)
+				gotResp, exists := got.(*scrumapp.Home)
 				if !exists {
 					return "error occurred"
 				}
 
-				expResp := exp.(*homeapp.Home)
+				expResp := exp.(*scrumapp.Home)
 				gotResp.DateUpdated = expResp.DateUpdated
 
 				return cmp.Diff(gotResp, expResp)
@@ -72,8 +72,8 @@ func update400(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPut,
 			StatusCode: http.StatusBadRequest,
-			Input: &homeapp.UpdateHome{
-				Address: &homeapp.UpdateAddress{
+			Input: &scrumapp.UpdateHome{
+				Address: &scrumapp.UpdateAddress{
 					Address1: dbtest.StringPointer(""),
 					Address2: dbtest.StringPointer(""),
 					ZipCode:  dbtest.StringPointer(""),
@@ -94,9 +94,9 @@ func update400(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPut,
 			StatusCode: http.StatusBadRequest,
-			Input: &homeapp.UpdateHome{
+			Input: &scrumapp.UpdateHome{
 				Type:    dbtest.StringPointer("BAD TYPE"),
-				Address: &homeapp.UpdateAddress{},
+				Address: &scrumapp.UpdateAddress{},
 			},
 			GotResp: &errs.Error{},
 			ExpResp: errs.Newf(errs.InvalidArgument, "parse: invalid home type \"BAD TYPE\""),
@@ -141,9 +141,9 @@ func update401(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			Method:     http.MethodPut,
 			StatusCode: http.StatusUnauthorized,
-			Input: &homeapp.UpdateHome{
+			Input: &scrumapp.UpdateHome{
 				Type: dbtest.StringPointer("SINGLE FAMILY"),
-				Address: &homeapp.UpdateAddress{
+				Address: &scrumapp.UpdateAddress{
 					Address1: dbtest.StringPointer("123 Mocking Bird Lane"),
 					Address2: dbtest.StringPointer("apt 105"),
 					ZipCode:  dbtest.StringPointer("35810"),

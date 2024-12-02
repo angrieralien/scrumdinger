@@ -6,7 +6,7 @@ import (
 
 	"github.com/angrieralien/scrumdinger/app/sdk/apitest"
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/dbtest"
 	"github.com/angrieralien/scrumdinger/business/types/role"
@@ -21,7 +21,7 @@ func insertSeedData(db *dbtest.Database, ath *auth.Auth) (apitest.SeedData, erro
 		return apitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err := homebus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
+	hmes, err := scrumbus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
 	if err != nil {
 		return apitest.SeedData{}, fmt.Errorf("seeding homes : %w", err)
 	}
@@ -51,7 +51,7 @@ func insertSeedData(db *dbtest.Database, ath *auth.Auth) (apitest.SeedData, erro
 		return apitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err = homebus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
+	hmes, err = scrumbus.TestGenerateSeedHomes(ctx, 2, busDomain.Home, usrs[0].ID)
 	if err != nil {
 		return apitest.SeedData{}, fmt.Errorf("seeding homes : %w", err)
 	}

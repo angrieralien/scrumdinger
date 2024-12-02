@@ -1,4 +1,4 @@
-package homebus
+package scrumbus
 
 import "github.com/angrieralien/scrumdinger/business/sdk/order"
 

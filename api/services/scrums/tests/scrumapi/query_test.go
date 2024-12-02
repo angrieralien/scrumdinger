@@ -5,15 +5,15 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/angrieralien/scrumdinger/app/domain/homeapp"
+	"github.com/angrieralien/scrumdinger/app/domain/scrumapp"
 	"github.com/angrieralien/scrumdinger/app/sdk/apitest"
 	"github.com/angrieralien/scrumdinger/app/sdk/query"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/google/go-cmp/cmp"
 )
 
 func query200(sd apitest.SeedData) []apitest.Table {
-	hmes := make([]homebus.Home, 0, len(sd.Admins[0].Homes)+len(sd.Users[0].Homes))
+	hmes := make([]scrumbus.Home, 0, len(sd.Admins[0].Homes)+len(sd.Users[0].Homes))
 	hmes = append(hmes, sd.Admins[0].Homes...)
 	hmes = append(hmes, sd.Users[0].Homes...)
 
@@ -28,8 +28,8 @@ func query200(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Admins[0].Token,
 			StatusCode: http.StatusOK,
 			Method:     http.MethodGet,
-			GotResp:    &query.Result[homeapp.Home]{},
-			ExpResp: &query.Result[homeapp.Home]{
+			GotResp:    &query.Result[scrumapp.Home]{},
+			ExpResp: &query.Result[scrumapp.Home]{
 				Page:        1,
 				RowsPerPage: 10,
 				Total:       len(hmes),
@@ -52,7 +52,7 @@ func queryByID200(sd apitest.SeedData) []apitest.Table {
 			Token:      sd.Users[0].Token,
 			StatusCode: http.StatusOK,
 			Method:     http.MethodGet,
-			GotResp:    &homeapp.Home{},
+			GotResp:    &scrumapp.Home{},
 			ExpResp:    toAppHomePtr(sd.Users[0].Homes[0]),
 			CmpFunc: func(got any, exp any) string {
 				return cmp.Diff(got, exp)
