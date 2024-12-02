@@ -13,9 +13,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/angrieralien/scrumdinger/api/services/scrums/build/all"
-	"github.com/angrieralien/scrumdinger/api/services/scrums/build/crud"
-	"github.com/angrieralien/scrumdinger/api/services/scrums/build/reporting"
+	"github.com/angrieralien/scrumdinger/api/services/scrumdinger/build/all"
+	"github.com/angrieralien/scrumdinger/api/services/scrumdinger/build/crud"
+	"github.com/angrieralien/scrumdinger/api/services/scrumdinger/build/reporting"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/debug"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
