@@ -78,13 +78,13 @@ func (b *Business) NewWithTx(tx sqldb.CommitRollbacker) (*Business, error) {
 }
 
 // Create adds a new scrum to the system.
-func (b *Business) Create(ctx context.Context, nh NewScrum) (Scrum, error) {
+func (b *Business) Create(ctx context.Context, ns NewScrum) (Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.create")
 	defer span.End()
 
-	usr, err := b.userBus.QueryByID(ctx, nh.UserID)
+	usr, err := b.userBus.QueryByID(ctx, ns.UserID)
 	if err != nil {
-		return Scrum{}, fmt.Errorf("user.querybyid: %s: %w", nh.UserID, err)
+		return Scrum{}, fmt.Errorf("user.querybyid: %s: %w", ns.UserID, err)
 	}
 
 	if !usr.Enabled {
@@ -95,21 +95,21 @@ func (b *Business) Create(ctx context.Context, nh NewScrum) (Scrum, error) {
 
 	s := Scrum{
 		ID:        uuid.New(),
-		Name:      nh.Name,
-		Time:      nh.Time,
-		Color:     nh.Color,
-		Attendees: nh.Attendees,
+		Name:      ns.Name,
+		Time:      ns.Time,
+		Color:     ns.Color,
+		Attendees: ns.Attendees,
 
-		Type: nh.Type,
+		Type: ns.Type,
 		Address: Address{
-			Address1: nh.Address.Address1,
-			Address2: nh.Address.Address2,
-			ZipCode:  nh.Address.ZipCode,
-			City:     nh.Address.City,
-			State:    nh.Address.State,
-			Country:  nh.Address.Country,
+			Address1: ns.Address.Address1,
+			Address2: ns.Address.Address2,
+			ZipCode:  ns.Address.ZipCode,
+			City:     ns.Address.City,
+			State:    ns.Address.State,
+			Country:  ns.Address.Country,
 		},
-		UserID:      nh.UserID,
+		UserID:      ns.UserID,
 		DateCreated: now,
 		DateUpdated: now,
 	}

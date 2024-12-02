@@ -207,7 +207,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 		Log:    log,
 		DB:     db,
 		Tracer: tracer,
-		SalesConfig: mux.SalesConfig{
+		ScrumdingerConfig: mux.ScrumdingerConfig{
 			AuthClient: authClient,
 		},
 	}

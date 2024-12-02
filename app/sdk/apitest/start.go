@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	authbuild "github.com/angrieralien/scrumdinger/api/services/auth/build/all"
-	salesbuild "github.com/angrieralien/scrumdinger/api/services/scrums/build/all"
+	scrumbuild "github.com/angrieralien/scrumdinger/api/services/scrums/build/all"
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
 	"github.com/angrieralien/scrumdinger/app/sdk/authclient"
 	"github.com/angrieralien/scrumdinger/app/sdk/mux"
@@ -44,10 +44,10 @@ func New(t *testing.T, testName string) *Test {
 	mux := mux.WebAPI(mux.Config{
 		Log: db.Log,
 		DB:  db.DB,
-		SalesConfig: mux.SalesConfig{
+		ScrumdingerConfig: mux.ScrumdingerConfig{
 			AuthClient: authClient,
 		},
-	}, salesbuild.Routes())
+	}, scrumbuild.Routes())
 
 	return &Test{
 		DB:   db,

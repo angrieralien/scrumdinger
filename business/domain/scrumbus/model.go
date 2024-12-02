@@ -34,7 +34,8 @@ type Scrum struct {
 
 // NewScrum is what we require from clients when adding a Scrum.
 type NewScrum struct {
-	UserID    uuid.UUID
+	UserID uuid.UUID
+
 	Name      string
 	Time      int
 	Color     string
@@ -64,7 +65,7 @@ type UpdateScrum struct {
 	Name      *string
 	Time      *int
 	Color     *string
-	Attendees []string
+	Attendees *[]string
 
 	Type    *scrumtype.ScrumType
 	Address *UpdateAddress

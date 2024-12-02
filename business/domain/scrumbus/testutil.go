@@ -11,7 +11,7 @@ import (
 
 // TestGenerateNewScrums is a helper method for testing.
 func TestGenerateNewScrums(n int, userID uuid.UUID) []NewScrum {
-	newHmes := make([]NewScrum, n)
+	newScrums := make([]NewScrum, n)
 
 	idx := rand.Intn(10000)
 	for i := 0; i < n; i++ {
@@ -23,7 +23,11 @@ func TestGenerateNewScrums(n int, userID uuid.UUID) []NewScrum {
 		}
 
 		nh := NewScrum{
-			Type: t,
+			Type:      t,
+			Name:      fmt.Sprintf("Name%d", idx),
+			Time:      idx,
+			Color:     fmt.Sprintf("Color%d", idx),
+			Attendees: []string{fmt.Sprintf("Attendee%d", idx), fmt.Sprintf("Attendee%d%d", idx, idx)},
 			Address: Address{
 				Address1: fmt.Sprintf("Address%d", idx),
 				Address2: fmt.Sprintf("Address%d", idx),
@@ -35,27 +39,27 @@ func TestGenerateNewScrums(n int, userID uuid.UUID) []NewScrum {
 			UserID: userID,
 		}
 
-		newHmes[i] = nh
+		newScrums[i] = nh
 	}
 
-	return newHmes
+	return newScrums
 }
 
 // TestGenerateSeedScrums is a helper method for testing.
 func TestGenerateSeedScrums(ctx context.Context, n int, api *Business, userID uuid.UUID) ([]Scrum, error) {
-	newHmes := TestGenerateNewScrums(n, userID)
+	newScrums := TestGenerateNewScrums(n, userID)
 
-	hmes := make([]Scrum, len(newHmes))
-	for i, nh := range newHmes {
-		hme, err := api.Create(ctx, nh)
+	scrums := make([]Scrum, len(newScrums))
+	for i, nh := range newScrums {
+		scrum, err := api.Create(ctx, nh)
 		if err != nil {
 			return nil, fmt.Errorf("seeding scrum: idx: %d : %w", i, err)
 		}
 
-		hmes[i] = hme
+		scrums[i] = scrum
 	}
 
-	return hmes, nil
+	return scrums, nil
 }
 
 // ParseAddress is a helper function to create an address value.

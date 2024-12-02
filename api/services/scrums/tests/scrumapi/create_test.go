@@ -18,7 +18,11 @@ func create200(sd apitest.SeedData) []apitest.Table {
 			Method:     http.MethodPost,
 			StatusCode: http.StatusOK,
 			Input: &scrumapp.NewScrum{
-				Name: "SINGLE FAMILY",
+				Name:      "Scrumdinger",
+				Type:      "SINGLE FAMILY",
+				Time:      5,
+				Color:     "red",
+				Attendees: []string{"stephen", "mark", "frank"},
 				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",
@@ -29,8 +33,12 @@ func create200(sd apitest.SeedData) []apitest.Table {
 			},
 			GotResp: &scrumapp.Scrum{},
 			ExpResp: &scrumapp.Scrum{
-				UserID: sd.Users[0].ID.String(),
-				Type:   "SINGLE FAMILY",
+				UserID:    sd.Users[0].ID.String(),
+				Name:      "Scrumdinger",
+				Time:      5,
+				Color:     "red",
+				Attendees: []string{"stephen", "mark", "frank"},
+				Type:      "SINGLE FAMILY",
 				Address: scrumapp.Address{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",

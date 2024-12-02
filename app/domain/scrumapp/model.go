@@ -37,12 +37,16 @@ type Address struct {
 
 // Scrum represents information about an individual scrum.
 type Scrum struct {
-	ID          string  `json:"id"`
-	UserID      string  `json:"userID"`
-	Type        string  `json:"type"`
-	Address     Address `json:"address"`
-	DateCreated string  `json:"dateCreated"`
-	DateUpdated string  `json:"dateUpdated"`
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Time        int      `json:"time"`
+	Color       string   `json:"color"`
+	Attendees   []string `json:"attendees"`
+	UserID      string   `json:"userID"`
+	Type        string   `json:"type"`
+	Address     Address  `json:"address"`
+	DateCreated string   `json:"dateCreated"`
+	DateUpdated string   `json:"dateUpdated"`
 }
 
 // Encode implements the encoder interface.
@@ -51,21 +55,25 @@ func (app Scrum) Encode() ([]byte, string, error) {
 	return data, "application/json", err
 }
 
-func toAppScrum(hme scrumbus.Scrum) Scrum {
+func toAppScrum(scrum scrumbus.Scrum) Scrum {
 	return Scrum{
-		ID:     hme.ID.String(),
-		UserID: hme.UserID.String(),
-		Type:   hme.Type.String(),
+		ID:        scrum.ID.String(),
+		UserID:    scrum.UserID.String(),
+		Name:      scrum.Name,
+		Time:      scrum.Time,
+		Color:     scrum.Color,
+		Attendees: scrum.Attendees,
+		Type:      scrum.Type.String(),
 		Address: Address{
-			Address1: hme.Address.Address1,
-			Address2: hme.Address.Address2,
-			ZipCode:  hme.Address.ZipCode,
-			City:     hme.Address.City,
-			State:    hme.Address.State,
-			Country:  hme.Address.Country,
+			Address1: scrum.Address.Address1,
+			Address2: scrum.Address.Address2,
+			ZipCode:  scrum.Address.ZipCode,
+			City:     scrum.Address.City,
+			State:    scrum.Address.State,
+			Country:  scrum.Address.Country,
 		},
-		DateCreated: hme.DateCreated.Format(time.RFC3339),
-		DateUpdated: hme.DateUpdated.Format(time.RFC3339),
+		DateCreated: scrum.DateCreated.Format(time.RFC3339),
+		DateUpdated: scrum.DateUpdated.Format(time.RFC3339),
 	}
 }
 
@@ -92,10 +100,11 @@ type NewAddress struct {
 
 // NewScrum defines the data needed to add a new scrum.
 type NewScrum struct {
-	Name      string     `json:"type" validate:"required"`
+	Name      string     `json:"name" validate:"required"`
 	Time      int        `json:"time" validate:"required"`
 	Color     string     `json:"color" validate:"required"`
 	Attendees []string   `json:"attendees" validate:"required"`
+	Type      string     `json:"type" validate:"required"`
 	Address   NewAddress `json:"address"`
 }
 
@@ -119,14 +128,18 @@ func toBusNewScrum(ctx context.Context, app NewScrum) (scrumbus.NewScrum, error)
 		return scrumbus.NewScrum{}, fmt.Errorf("getuserid: %w", err)
 	}
 
-	typ, err := scrumtype.Parse(app.Name)
+	typ, err := scrumtype.Parse(app.Type)
 	if err != nil {
 		return scrumbus.NewScrum{}, fmt.Errorf("parse: %w", err)
 	}
 
 	bus := scrumbus.NewScrum{
-		UserID: userID,
-		Type:   typ,
+		UserID:    userID,
+		Name:      app.Name,
+		Time:      app.Time,
+		Color:     app.Color,
+		Attendees: app.Attendees,
+		Type:      typ,
 		Address: scrumbus.Address{
 			Address1: app.Address.Address1,
 			Address2: app.Address.Address2,

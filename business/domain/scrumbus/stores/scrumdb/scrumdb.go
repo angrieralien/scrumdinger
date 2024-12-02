@@ -115,7 +115,7 @@ func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy 
 
 	const q = `
     SELECT
-	    scrum_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
+	    scrum_id, user_id, name, time, color, attendees, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated
 	FROM
 	  	scrums`
 
