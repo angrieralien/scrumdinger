@@ -12,7 +12,7 @@
 	import { onMount } from 'svelte';
 	import ScrumTimer from './ScrumTimer.svelte';
 	import { DrawerMeta, getDrawerContext, setDrawerContext } from '$lib/models/drawer.svelte';
-
+	import { scrumAPI } from '../api/scrumapi';
 	const toastStore = getToastStore();
 
 	let user: User;
@@ -25,6 +25,10 @@
 		user = getUserContext();
 		drawerStore = getDrawerStore();
 		drawerMeta = getDrawerContext();
+
+		scrumAPI.GET().then((data) => {
+			console.log(data);
+		});
 	});
 
 	// contexts
@@ -89,7 +93,7 @@
 						</div>
 						<span class="flex-auto">
 							<dt>{s.name}</dt>
-							<dd>{s.minutes} minutes</dd>
+							<dd>{s.time} minutes</dd>
 						</span>
 						<span class="full"></span>
 						<button
@@ -136,7 +140,7 @@
 {/if}
 {#if showTimer}
 	<ScrumTimer
-		countdown={selectedScrum.minutes * 60}
+		countdown={selectedScrum.time * 60}
 		attendees={selectedScrum.attendees}
 		done={() => {
 			selectedScrum = new ScrumMeeting();

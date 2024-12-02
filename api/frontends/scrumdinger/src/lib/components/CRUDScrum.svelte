@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { scrumAPI } from '$lib/api/scrumapi';
 	import { getDrawerContext } from '$lib/models/drawer.svelte';
 	import { getScrumContext, ScrumMeeting } from '$lib/models/scrum.svelte';
 	import { getUserContext } from '$lib/models/user.svelte';
@@ -42,7 +43,7 @@
 		});
 
 		dst.color = src.color;
-		dst.minutes = src.minutes;
+		dst.time = src.time;
 		dst.name = src.name;
 	}
 
@@ -51,19 +52,25 @@
 		drawerStore.close();
 	}
 
+	function updateLocalScrums() {
+		if (state === 'edit') {
+			copyScrum(scrum, editScrum);
+		} else {
+			scrums.meetings.push(scrum);
+		}
+	}
+
 	function submit() {
 		if (user.isLoggedIn) {
-			console.log('here');
-			//POST
+			scrumAPI.POST(scrum.toJson()).then((data) => {
+				updateLocalScrums();
+				drawerStore.close();
+			});
 		} else {
-			if (state === 'edit') {
-				copyScrum(scrum, editScrum);
-			} else {
-				scrums.meetings.push(scrum);
-			}
-		}
+			updateLocalScrums();
 
-		drawerStore.close();
+			drawerStore.close();
+		}
 	}
 
 	function cancel() {
@@ -101,13 +108,13 @@
 					class="grow pr-3"
 					accent="accent-surface-500"
 					name="range-slider"
-					bind:value={scrum.minutes}
+					bind:value={scrum.time}
 					max={60}
 					min={1}
 					step={1}
 					ticked
 				></RangeSlider>
-				{scrum.minutes} minutes
+				{scrum.time} minutes
 			</div>
 
 			<div class="flex flex-row justify-center my-3">

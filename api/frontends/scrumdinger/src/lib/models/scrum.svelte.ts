@@ -12,9 +12,18 @@ export function getScrumContext(): Scrum {
 
 export class ScrumMeeting {
 	name: string = $state('Project A');
-	minutes: number = $state(5);
+	time: number = $state(5);
 	attendees: string[] = $state([]);
 	color: string = $state('bg-primary-500');
+
+	toJson() {
+		return JSON.stringify({
+			name: this.name,
+			time: this.time,
+			attendees: this.attendees,
+			color: this.color
+		});
+	}
 }
 
 export class Scrum {
