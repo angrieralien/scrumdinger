@@ -100,7 +100,6 @@
 						<span class="flex-auto">
 							<dt>{s.name}</dt>
 							<dd>{s.time} minutes</dd>
-							<dd>{s.id}</dd>
 						</span>
 						<span class="full"></span>
 						<button
