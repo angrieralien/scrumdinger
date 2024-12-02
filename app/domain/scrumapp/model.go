@@ -56,8 +56,8 @@ func toAppScrum(scrum scrumbus.Scrum) Scrum {
 
 func toAppScrums(scrums []scrumbus.Scrum) []Scrum {
 	app := make([]Scrum, len(scrums))
-	for i, hme := range scrums {
-		app[i] = toAppScrum(hme)
+	for i, scrum := range scrums {
+		app[i] = toAppScrum(scrum)
 	}
 
 	return app

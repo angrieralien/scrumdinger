@@ -47,14 +47,14 @@ func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (scrumbus.Storer, error) {
 }
 
 // Create inserts a new scrum into the database.
-func (s *Store) Create(ctx context.Context, hme scrumbus.Scrum) error {
+func (s *Store) Create(ctx context.Context, scrum scrumbus.Scrum) error {
 	const q = `
     INSERT INTO scrums
         (scrum_id, user_id, name, time, color, attendees, date_created, date_updated)
     VALUES
         (:scrum_id, :user_id, :name, :time, :color, :attendees, :date_created, :date_updated)`
 
-	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(hme)); err != nil {
+	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(scrum)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)
 	}
 
@@ -62,11 +62,11 @@ func (s *Store) Create(ctx context.Context, hme scrumbus.Scrum) error {
 }
 
 // Delete removes a scrum from the database.
-func (s *Store) Delete(ctx context.Context, hme scrumbus.Scrum) error {
+func (s *Store) Delete(ctx context.Context, scrum scrumbus.Scrum) error {
 	data := struct {
 		ID string `db:"scrum_id"`
 	}{
-		ID: hme.ID.String(),
+		ID: scrum.ID.String(),
 	}
 
 	const q = `
@@ -83,7 +83,7 @@ func (s *Store) Delete(ctx context.Context, hme scrumbus.Scrum) error {
 }
 
 // Update replaces a scrum document in the database.
-func (s *Store) Update(ctx context.Context, hme scrumbus.Scrum) error {
+func (s *Store) Update(ctx context.Context, scrum scrumbus.Scrum) error {
 	const q = `
     UPDATE
         scrums
@@ -96,7 +96,7 @@ func (s *Store) Update(ctx context.Context, hme scrumbus.Scrum) error {
     WHERE
         scrum_id = :scrum_id`
 
-	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(hme)); err != nil {
+	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(scrum)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)
 	}
 

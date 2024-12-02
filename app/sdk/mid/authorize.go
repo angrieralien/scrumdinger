@@ -120,7 +120,7 @@ func AuthorizeScrum(client *authclient.Client, scrumBus *scrumbus.Business) web.
 					return errs.New(errs.Unauthenticated, ErrInvalidID)
 				}
 
-				hme, err := scrumBus.QueryByID(ctx, scrumID)
+				scrum, err := scrumBus.QueryByID(ctx, scrumID)
 				if err != nil {
 					switch {
 					case errors.Is(err, scrumbus.ErrNotFound):
@@ -130,8 +130,8 @@ func AuthorizeScrum(client *authclient.Client, scrumBus *scrumbus.Business) web.
 					}
 				}
 
-				userID = hme.UserID
-				ctx = setScrum(ctx, hme)
+				userID = scrum.UserID
+				ctx = setScrum(ctx, scrum)
 			}
 
 			ctx, cancel := context.WithTimeout(ctx, 5*time.Second)

@@ -23,14 +23,14 @@ func toAppScrum(scrum scrumbus.Scrum) scrumapp.Scrum {
 
 func toAppScrums(scrums []scrumbus.Scrum) []scrumapp.Scrum {
 	items := make([]scrumapp.Scrum, len(scrums))
-	for i, hme := range scrums {
-		items[i] = toAppScrum(hme)
+	for i, scrum := range scrums {
+		items[i] = toAppScrum(scrum)
 	}
 
 	return items
 }
 
-func toAppScrumPtr(hme scrumbus.Scrum) *scrumapp.Scrum {
-	appHme := toAppScrum(hme)
+func toAppScrumPtr(scrum scrumbus.Scrum) *scrumapp.Scrum {
+	appHme := toAppScrum(scrum)
 	return &appHme
 }

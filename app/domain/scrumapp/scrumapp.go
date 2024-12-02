@@ -35,12 +35,12 @@ func (a *app) create(ctx context.Context, r *http.Request) web.Encoder {
 		return errs.New(errs.InvalidArgument, err)
 	}
 
-	hme, err := a.scrumBus.Create(ctx, nh)
+	scrum, err := a.scrumBus.Create(ctx, nh)
 	if err != nil {
-		return errs.Newf(errs.Internal, "create: hme[%+v]: %s", app, err)
+		return errs.Newf(errs.Internal, "create: scrum[%+v]: %s", app, err)
 	}
 
-	return toAppScrum(hme)
+	return toAppScrum(scrum)
 }
 
 func (a *app) update(ctx context.Context, r *http.Request) web.Encoder {
@@ -54,27 +54,27 @@ func (a *app) update(ctx context.Context, r *http.Request) web.Encoder {
 		return errs.New(errs.InvalidArgument, err)
 	}
 
-	hme, err := mid.GetScrum(ctx)
+	scrum, err := mid.GetScrum(ctx)
 	if err != nil {
 		return errs.Newf(errs.Internal, "scrum missing in context: %s", err)
 	}
 
-	updUsr, err := a.scrumBus.Update(ctx, hme, uh)
+	updUsr, err := a.scrumBus.Update(ctx, scrum, uh)
 	if err != nil {
-		return errs.Newf(errs.Internal, "update: scrumID[%s] uh[%+v]: %s", hme.ID, uh, err)
+		return errs.Newf(errs.Internal, "update: scrumID[%s] uh[%+v]: %s", scrum.ID, uh, err)
 	}
 
 	return toAppScrum(updUsr)
 }
 
 func (a *app) delete(ctx context.Context, _ *http.Request) web.Encoder {
-	hme, err := mid.GetScrum(ctx)
+	scrum, err := mid.GetScrum(ctx)
 	if err != nil {
 		return errs.Newf(errs.Internal, "scrumID missing in context: %s", err)
 	}
 
-	if err := a.scrumBus.Delete(ctx, hme); err != nil {
-		return errs.Newf(errs.Internal, "delete: scrumID[%s]: %s", hme.ID, err)
+	if err := a.scrumBus.Delete(ctx, scrum); err != nil {
+		return errs.Newf(errs.Internal, "delete: scrumID[%s]: %s", scrum.ID, err)
 	}
 
 	return nil
@@ -112,10 +112,10 @@ func (a *app) query(ctx context.Context, r *http.Request) web.Encoder {
 }
 
 func (a *app) queryByID(ctx context.Context, _ *http.Request) web.Encoder {
-	hme, err := mid.GetScrum(ctx)
+	scrum, err := mid.GetScrum(ctx)
 	if err != nil {
 		return errs.Newf(errs.Internal, "querybyid: %s", err)
 	}
 
-	return toAppScrum(hme)
+	return toAppScrum(scrum)
 }

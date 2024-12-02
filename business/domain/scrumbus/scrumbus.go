@@ -27,9 +27,9 @@ var (
 // retrieve data.
 type Storer interface {
 	NewWithTx(tx sqldb.CommitRollbacker) (Storer, error)
-	Create(ctx context.Context, hme Scrum) error
-	Update(ctx context.Context, hme Scrum) error
-	Delete(ctx context.Context, hme Scrum) error
+	Create(ctx context.Context, scrum Scrum) error
+	Update(ctx context.Context, scrum Scrum) error
+	Delete(ctx context.Context, scrum Scrum) error
 	Query(ctx context.Context, filter QueryFilter, orderBy order.By, page page.Page) ([]Scrum, error)
 	Count(ctx context.Context, filter QueryFilter) (int, error)
 	QueryByID(ctx context.Context, scrumID uuid.UUID) (Scrum, error)
@@ -113,41 +113,41 @@ func (b *Business) Create(ctx context.Context, ns NewScrum) (Scrum, error) {
 }
 
 // Update modifies information about a scrum.
-func (b *Business) Update(ctx context.Context, hme Scrum, uh UpdateScrum) (Scrum, error) {
+func (b *Business) Update(ctx context.Context, scrum Scrum, uh UpdateScrum) (Scrum, error) {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.update")
 	defer span.End()
 
-	hme.DateUpdated = time.Now()
+	scrum.DateUpdated = time.Now()
 
 	if uh.Name != nil {
-		hme.Name = *uh.Name
+		scrum.Name = *uh.Name
 	}
 
 	if uh.Time != nil {
-		hme.Time = *uh.Time
+		scrum.Time = *uh.Time
 	}
 
 	if uh.Color != nil {
-		hme.Color = *uh.Color
+		scrum.Color = *uh.Color
 	}
 
 	if uh.Attendees != nil {
-		hme.Attendees = uh.Attendees
+		scrum.Attendees = uh.Attendees
 	}
 
-	if err := b.storer.Update(ctx, hme); err != nil {
+	if err := b.storer.Update(ctx, scrum); err != nil {
 		return Scrum{}, fmt.Errorf("update: %w", err)
 	}
 
-	return hme, nil
+	return scrum, nil
 }
 
 // Delete removes the specified scrum.
-func (b *Business) Delete(ctx context.Context, hme Scrum) error {
+func (b *Business) Delete(ctx context.Context, scrum Scrum) error {
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.delete")
 	defer span.End()
 
-	if err := b.storer.Delete(ctx, hme); err != nil {
+	if err := b.storer.Delete(ctx, scrum); err != nil {
 		return fmt.Errorf("delete: %w", err)
 	}
 
@@ -180,12 +180,12 @@ func (b *Business) QueryByID(ctx context.Context, scrumID uuid.UUID) (Scrum, err
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.querybyid")
 	defer span.End()
 
-	hme, err := b.storer.QueryByID(ctx, scrumID)
+	scrum, err := b.storer.QueryByID(ctx, scrumID)
 	if err != nil {
 		return Scrum{}, fmt.Errorf("query: scrumID[%s]: %w", scrumID, err)
 	}
 
-	return hme, nil
+	return scrum, nil
 }
 
 // QueryByUserID finds the scrums by a specified User ID.

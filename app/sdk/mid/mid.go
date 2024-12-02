@@ -76,8 +76,8 @@ func GetUser(ctx context.Context) (userbus.User, error) {
 	return v, nil
 }
 
-func setScrum(ctx context.Context, hme scrumbus.Scrum) context.Context {
-	return context.WithValue(ctx, scrumKey, hme)
+func setScrum(ctx context.Context, scrum scrumbus.Scrum) context.Context {
+	return context.WithValue(ctx, scrumKey, scrum)
 }
 
 // GetScrum returns the scrum from the context.
