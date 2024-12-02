@@ -8,9 +8,7 @@ import (
 )
 
 var orderByFields = map[string]string{
-	scrumbus.OrderByID:     "scrum_id",
-	scrumbus.OrderByType:   "type",
-	scrumbus.OrderByUserID: "user_id",
+	scrumbus.OrderByID: "scrum_id",
 }
 
 func orderByClause(orderBy order.By) (string, error) {

@@ -12,6 +12,7 @@ import (
 type QueryFilter struct {
 	ID               *uuid.UUID
 	UserID           *uuid.UUID
+	Name             *string
 	Type             *scrumtype.ScrumType
 	StartCreatedDate *time.Time
 	EndCreatedDate   *time.Time

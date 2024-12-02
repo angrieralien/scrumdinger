@@ -10,8 +10,14 @@ import (
 )
 
 type scrum struct {
-	ID          uuid.UUID `db:"scrum_id"`
-	UserID      uuid.UUID `db:"user_id"`
+	ID     uuid.UUID `db:"scrum_id"`
+	UserID uuid.UUID `db:"user_id"`
+
+	Name      string   `db:"name"`
+	Time      int      `db:"time"`
+	Color     string   `db:"color"`
+	Attendees []string `db:"attendees"`
+
 	Type        string    `db:"type"`
 	Address1    string    `db:"address_1"`
 	Address2    string    `db:"address_2"`
@@ -25,8 +31,14 @@ type scrum struct {
 
 func toDBScrum(bus scrumbus.Scrum) scrum {
 	db := scrum{
-		ID:          bus.ID,
-		UserID:      bus.UserID,
+		ID:     bus.ID,
+		UserID: bus.UserID,
+
+		Name:      bus.Name,
+		Time:      bus.Time,
+		Color:     bus.Color,
+		Attendees: bus.Attendees,
+
 		Type:        bus.Type.String(),
 		Address1:    bus.Address.Address1,
 		Address2:    bus.Address.Address2,

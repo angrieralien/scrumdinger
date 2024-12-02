@@ -50,9 +50,9 @@ func (s *Store) NewWithTx(tx sqldb.CommitRollbacker) (scrumbus.Storer, error) {
 func (s *Store) Create(ctx context.Context, hme scrumbus.Scrum) error {
 	const q = `
     INSERT INTO scrums
-        (scrum_id, user_id, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated)
+        (scrum_id, user_id, name, time, color, attendees, type, address_1, address_2, zip_code, city, state, country, date_created, date_updated)
     VALUES
-        (:scrum_id, :user_id, :type, :address_1, :address_2, :zip_code, :city, :state, :country, :date_created, :date_updated)`
+        (:scrum_id, :user_id, :name, :time, :color, :attendees, :type, :address_1, :address_2, :zip_code, :city, :state, :country, :date_created, :date_updated)`
 
 	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(hme)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)

@@ -92,8 +92,11 @@ type NewAddress struct {
 
 // NewScrum defines the data needed to add a new scrum.
 type NewScrum struct {
-	Type    string     `json:"type" validate:"required"`
-	Address NewAddress `json:"address"`
+	Name      string     `json:"type" validate:"required"`
+	Time      int        `json:"time" validate:"required"`
+	Color     string     `json:"color" validate:"required"`
+	Attendees []string   `json:"attendees" validate:"required"`
+	Address   NewAddress `json:"address"`
 }
 
 // Decode implements the decoder interface.
@@ -116,7 +119,7 @@ func toBusNewScrum(ctx context.Context, app NewScrum) (scrumbus.NewScrum, error)
 		return scrumbus.NewScrum{}, fmt.Errorf("getuserid: %w", err)
 	}
 
-	typ, err := scrumtype.Parse(app.Type)
+	typ, err := scrumtype.Parse(app.Name)
 	if err != nil {
 		return scrumbus.NewScrum{}, fmt.Errorf("parse: %w", err)
 	}

@@ -18,7 +18,7 @@ func create200(sd apitest.SeedData) []apitest.Table {
 			Method:     http.MethodPost,
 			StatusCode: http.StatusOK,
 			Input: &scrumapp.NewScrum{
-				Type: "SINGLE FAMILY",
+				Name: "SINGLE FAMILY",
 				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",
@@ -81,7 +81,7 @@ func create400(sd apitest.SeedData) []apitest.Table {
 			Method:     http.MethodPost,
 			StatusCode: http.StatusBadRequest,
 			Input: &scrumapp.NewScrum{
-				Type: "BAD TYPE",
+				Name: "BAD TYPE",
 				Address: scrumapp.NewAddress{
 					Address1: "123 Mocking Bird Lane",
 					ZipCode:  "35810",

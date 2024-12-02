@@ -93,8 +93,13 @@ func (b *Business) Create(ctx context.Context, nh NewScrum) (Scrum, error) {
 
 	now := time.Now()
 
-	hme := Scrum{
-		ID:   uuid.New(),
+	s := Scrum{
+		ID:        uuid.New(),
+		Name:      nh.Name,
+		Time:      nh.Time,
+		Color:     nh.Color,
+		Attendees: nh.Attendees,
+
 		Type: nh.Type,
 		Address: Address{
 			Address1: nh.Address.Address1,
@@ -109,11 +114,11 @@ func (b *Business) Create(ctx context.Context, nh NewScrum) (Scrum, error) {
 		DateUpdated: now,
 	}
 
-	if err := b.storer.Create(ctx, hme); err != nil {
+	if err := b.storer.Create(ctx, s); err != nil {
 		return Scrum{}, fmt.Errorf("create: %w", err)
 	}
 
-	return hme, nil
+	return s, nil
 }
 
 // Update modifies information about a scrum.

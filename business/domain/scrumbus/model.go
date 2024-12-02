@@ -19,7 +19,12 @@ type Address struct {
 
 // Scrum represents an individual scrum.
 type Scrum struct {
-	ID          uuid.UUID
+	ID        uuid.UUID
+	Name      string
+	Time      int
+	Color     string
+	Attendees []string
+
 	UserID      uuid.UUID
 	Type        scrumtype.ScrumType
 	Address     Address
@@ -29,7 +34,12 @@ type Scrum struct {
 
 // NewScrum is what we require from clients when adding a Scrum.
 type NewScrum struct {
-	UserID  uuid.UUID
+	UserID    uuid.UUID
+	Name      string
+	Time      int
+	Color     string
+	Attendees []string
+
 	Type    scrumtype.ScrumType
 	Address Address
 }
@@ -51,6 +61,11 @@ type UpdateAddress struct {
 // we do not want to use pointers to basic types but we make exception around
 // marshalling/unmarshalling.
 type UpdateScrum struct {
+	Name      *string
+	Time      *int
+	Color     *string
+	Attendees []string
+
 	Type    *scrumtype.ScrumType
 	Address *UpdateAddress
 }
