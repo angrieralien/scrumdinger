@@ -44,14 +44,14 @@ func insertSeedData(busDomain dbtest.BusDomain) (unitest.SeedData, error) {
 		return unitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err := scrumbus.TestGenerateSeedScrums(ctx, 2, busDomain.Scrum, usrs[0].ID)
+	scrums, err := scrumbus.TestGenerateSeedScrums(ctx, 2, busDomain.Scrum, usrs[0].ID)
 	if err != nil {
 		return unitest.SeedData{}, fmt.Errorf("seeding scrums : %w", err)
 	}
 
 	tu1 := unitest.User{
 		User:   usrs[0],
-		Scrums: hmes,
+		Scrums: scrums,
 	}
 
 	// -------------------------------------------------------------------------
@@ -72,14 +72,14 @@ func insertSeedData(busDomain dbtest.BusDomain) (unitest.SeedData, error) {
 		return unitest.SeedData{}, fmt.Errorf("seeding users : %w", err)
 	}
 
-	hmes, err = scrumbus.TestGenerateSeedScrums(ctx, 2, busDomain.Scrum, usrs[0].ID)
+	scrums, err = scrumbus.TestGenerateSeedScrums(ctx, 2, busDomain.Scrum, usrs[0].ID)
 	if err != nil {
 		return unitest.SeedData{}, fmt.Errorf("seeding scrums : %w", err)
 	}
 
 	tu3 := unitest.User{
 		User:   usrs[0],
-		Scrums: hmes,
+		Scrums: scrums,
 	}
 
 	// -------------------------------------------------------------------------
@@ -106,18 +106,18 @@ func insertSeedData(busDomain dbtest.BusDomain) (unitest.SeedData, error) {
 // =============================================================================
 
 func query(busDomain dbtest.BusDomain, sd unitest.SeedData) []unitest.Table {
-	hmes := make([]scrumbus.Scrum, 0, len(sd.Admins[0].Scrums)+len(sd.Users[0].Scrums))
-	hmes = append(hmes, sd.Admins[0].Scrums...)
-	hmes = append(hmes, sd.Users[0].Scrums...)
+	scrums := make([]scrumbus.Scrum, 0, len(sd.Admins[0].Scrums)+len(sd.Users[0].Scrums))
+	scrums = append(scrums, sd.Admins[0].Scrums...)
+	scrums = append(scrums, sd.Users[0].Scrums...)
 
-	sort.Slice(hmes, func(i, j int) bool {
-		return hmes[i].ID.String() <= hmes[j].ID.String()
+	sort.Slice(scrums, func(i, j int) bool {
+		return scrums[i].ID.String() <= scrums[j].ID.String()
 	})
 
 	table := []unitest.Table{
 		{
 			Name:    "all",
-			ExpResp: hmes,
+			ExpResp: scrums,
 			ExcFunc: func(ctx context.Context) any {
 				resp, err := busDomain.Scrum.Query(ctx, scrumbus.QueryFilter{}, scrumbus.DefaultOrderBy, page.MustParse("1", "10"))
 				if err != nil {

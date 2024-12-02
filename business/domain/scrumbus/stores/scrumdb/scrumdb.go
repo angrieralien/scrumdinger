@@ -132,12 +132,12 @@ func (s *Store) Query(ctx context.Context, filter scrumbus.QueryFilter, orderBy 
 		return nil, fmt.Errorf("namedqueryslice: %w", err)
 	}
 
-	hmes, err := toBusScrums(dbHmes)
+	scrums, err := toBusScrums(dbHmes)
 	if err != nil {
 		return nil, err
 	}
 
-	return hmes, nil
+	return scrums, nil
 }
 
 // Count returns the total number of scrums in the DB.

@@ -13,12 +13,12 @@ import (
 )
 
 func query200(sd apitest.SeedData) []apitest.Table {
-	hmes := make([]scrumbus.Scrum, 0, len(sd.Admins[0].Scrums)+len(sd.Users[0].Scrums))
-	hmes = append(hmes, sd.Admins[0].Scrums...)
-	hmes = append(hmes, sd.Users[0].Scrums...)
+	scrums := make([]scrumbus.Scrum, 0, len(sd.Admins[0].Scrums)+len(sd.Users[0].Scrums))
+	scrums = append(scrums, sd.Admins[0].Scrums...)
+	scrums = append(scrums, sd.Users[0].Scrums...)
 
-	sort.Slice(hmes, func(i, j int) bool {
-		return hmes[i].ID.String() <= hmes[j].ID.String()
+	sort.Slice(scrums, func(i, j int) bool {
+		return scrums[i].ID.String() <= scrums[j].ID.String()
 	})
 
 	table := []apitest.Table{
@@ -32,8 +32,8 @@ func query200(sd apitest.SeedData) []apitest.Table {
 			ExpResp: &query.Result[scrumapp.Scrum]{
 				Page:        1,
 				RowsPerPage: 10,
-				Total:       len(hmes),
-				Items:       toAppScrums(hmes),
+				Total:       len(scrums),
+				Items:       toAppScrums(scrums),
 			},
 			CmpFunc: func(got any, exp any) string {
 				return cmp.Diff(got, exp)

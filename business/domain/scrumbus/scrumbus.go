@@ -159,12 +159,12 @@ func (b *Business) Query(ctx context.Context, filter QueryFilter, orderBy order.
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.query")
 	defer span.End()
 
-	hmes, err := b.storer.Query(ctx, filter, orderBy, page)
+	scrums, err := b.storer.Query(ctx, filter, orderBy, page)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
 
-	return hmes, nil
+	return scrums, nil
 }
 
 // Count returns the total number of scrums.
@@ -193,10 +193,10 @@ func (b *Business) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]Scrum
 	ctx, span := otel.AddSpan(ctx, "business.scrumbus.querybyuserid")
 	defer span.End()
 
-	hmes, err := b.storer.QueryByUserID(ctx, userID)
+	scrums, err := b.storer.QueryByUserID(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
 
-	return hmes, nil
+	return scrums, nil
 }

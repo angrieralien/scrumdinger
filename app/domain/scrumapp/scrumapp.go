@@ -98,7 +98,7 @@ func (a *app) query(ctx context.Context, r *http.Request) web.Encoder {
 		return errs.NewFieldsError("order", err)
 	}
 
-	hmes, err := a.scrumBus.Query(ctx, filter, orderBy, page)
+	scrums, err := a.scrumBus.Query(ctx, filter, orderBy, page)
 	if err != nil {
 		return errs.Newf(errs.Internal, "query: %s", err)
 	}
@@ -108,7 +108,7 @@ func (a *app) query(ctx context.Context, r *http.Request) web.Encoder {
 		return errs.Newf(errs.Internal, "count: %s", err)
 	}
 
-	return query.NewResult(toAppScrums(hmes), total, page)
+	return query.NewResult(toAppScrums(scrums), total, page)
 }
 
 func (a *app) queryByID(ctx context.Context, _ *http.Request) web.Encoder {
