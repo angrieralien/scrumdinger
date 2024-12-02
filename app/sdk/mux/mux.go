@@ -49,7 +49,7 @@ func WithFileServer(react bool, static embed.FS, dir string, path string) func(o
 	}
 }
 
-// ScrumdingerConfig contains sales service specific config.
+// ScrumdingerConfig contains scrumdinger service specific config.
 type ScrumdingerConfig struct {
 	AuthClient *authclient.Client
 }

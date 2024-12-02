@@ -120,12 +120,12 @@ LOKI            := grafana/loki:3.2.0
 PROMTAIL        := grafana/promtail:3.2.0
 
 KIND_CLUSTER    := ardan-starter-cluster
-NAMESPACE       := sales-system
-SALES_APP       := scrumdinger
+NAMESPACE       := scrumdinger-system
+SCRUMDINGER_APP       := scrumdinger
 AUTH_APP        := auth
 BASE_IMAGE_NAME := localhost/angrieralien
 VERSION         := 0.0.1
-SALES_IMAGE     := $(BASE_IMAGE_NAME)/$(SALES_APP):$(VERSION)
+SCRUMDINGER_IMAGE     := $(BASE_IMAGE_NAME)/$(SCRUMDINGER_APP):$(VERSION)
 METRICS_IMAGE   := $(BASE_IMAGE_NAME)/metrics:$(VERSION)
 AUTH_IMAGE      := $(BASE_IMAGE_NAME)/$(AUTH_APP):$(VERSION)
 
@@ -164,12 +164,12 @@ dev-docker:
 # ==============================================================================
 # Building containers
 
-build: sales metrics auth
+build: scrumdinger metrics auth
 
-sales:
+scrumdinger:
 	docker build \
-		-f zarf/docker/dockerfile.sales \
-		-t $(SALES_IMAGE) \
+		-f zarf/docker/dockerfile.scrumdinger \
+		-t $(SCRUMDINGER_IMAGE) \
 		--build-arg BUILD_REF=$(VERSION) \
 		--build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
 		.
@@ -223,7 +223,7 @@ dev-status:
 # ------------------------------------------------------------------------------
 
 dev-load:
-	kind load docker-image $(SALES_IMAGE) --name $(KIND_CLUSTER) & \
+	kind load docker-image $(SCRUMDINGER_IMAGE) --name $(KIND_CLUSTER) & \
 	kind load docker-image $(METRICS_IMAGE) --name $(KIND_CLUSTER) & \
 	kind load docker-image $(AUTH_IMAGE) --name $(KIND_CLUSTER) & \
 	wait;
@@ -241,19 +241,19 @@ dev-apply:
 	kustomize build zarf/k8s/dev/auth | kubectl apply -f -
 	kubectl wait pods --namespace=$(NAMESPACE) --selector app=$(AUTH_APP) --timeout=120s --for=condition=Ready
 
-	kustomize build zarf/k8s/dev/sales | kubectl apply -f -
-	kubectl wait pods --namespace=$(NAMESPACE) --selector app=$(SALES_APP) --timeout=120s --for=condition=Ready
+	kustomize build zarf/k8s/dev/scrumdinger | kubectl apply -f -
+	kubectl wait pods --namespace=$(NAMESPACE) --selector app=$(SCRUMDINGER_APP) --timeout=120s --for=condition=Ready
 
 dev-restart:
 	kubectl rollout restart deployment $(AUTH_APP) --namespace=$(NAMESPACE)
-	kubectl rollout restart deployment $(SALES_APP) --namespace=$(NAMESPACE)
+	kubectl rollout restart deployment $(SCRUMDINGER_APP) --namespace=$(NAMESPACE)
 
 dev-update: build dev-load dev-restart
 
 dev-update-apply: build dev-load dev-apply
 
 dev-logs:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | go run api/tooling/logfmt/main.go -service=$(SALES_APP)
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | go run api/tooling/logfmt/main.go -service=$(SCRUMDINGER_APP)
 
 dev-logs-auth:
 	kubectl logs --namespace=$(NAMESPACE) -l app=$(AUTH_APP) --all-containers=true -f --tail=100 | go run api/tooling/logfmt/main.go
@@ -261,16 +261,16 @@ dev-logs-auth:
 # ------------------------------------------------------------------------------
 
 dev-logs-init:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) -f --tail=100 -c init-migrate-seed
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP) -f --tail=100 -c init-migrate-seed
 
 dev-describe-node:
 	kubectl describe node
 
 dev-describe-deployment:
-	kubectl describe deployment --namespace=$(NAMESPACE) $(SALES_APP)
+	kubectl describe deployment --namespace=$(NAMESPACE) $(SCRUMDINGER_APP)
 
-dev-describe-sales:
-	kubectl describe pod --namespace=$(NAMESPACE) -l app=$(SALES_APP)
+dev-describe-scrumdinger:
+	kubectl describe pod --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP)
 
 dev-describe-auth:
 	kubectl describe pod --namespace=$(NAMESPACE) -l app=$(AUTH_APP)
@@ -301,7 +301,7 @@ dev-logs-promtail:
 # ------------------------------------------------------------------------------
 
 dev-services-delete:
-	kustomize build zarf/k8s/dev/sales | kubectl delete -f -
+	kustomize build zarf/k8s/dev/scrumdinger | kubectl delete -f -
 	kustomize build zarf/k8s/dev/grafana | kubectl delete -f -
 	kustomize build zarf/k8s/dev/tempo | kubectl delete -f -
 	kustomize build zarf/k8s/dev/loki | kubectl delete -f -
@@ -310,7 +310,7 @@ dev-services-delete:
 
 dev-describe-replicaset:
 	kubectl get rs
-	kubectl describe rs --namespace=$(NAMESPACE) -l app=$(SALES_APP)
+	kubectl describe rs --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP)
 
 dev-events:
 	kubectl get ev --sort-by metadata.creationTimestamp
@@ -319,7 +319,7 @@ dev-events-warn:
 	kubectl get ev --field-selector type=Warning --sort-by metadata.creationTimestamp
 
 dev-shell:
-	kubectl exec --namespace=$(NAMESPACE) -it $(shell kubectl get pods --namespace=$(NAMESPACE) | grep sales | cut -c1-26) --container sales-api -- /bin/sh
+	kubectl exec --namespace=$(NAMESPACE) -it $(shell kubectl get pods --namespace=$(NAMESPACE) | grep scrumdinger | cut -c1-26) --container scrumdinger-api -- /bin/sh
 
 dev-database-restart:
 	kubectl rollout restart statefulset database --namespace=$(NAMESPACE)
@@ -342,10 +342,10 @@ compose-logs:
 # Administration
 
 migrate:
-	export SALES_DB_HOST=localhost; go run api/tooling/admin/main.go migrate
+	export SCRUMDINGER_DB_HOST=localhost; go run api/tooling/admin/main.go migrate
 
 seed: migrate
-	export SALES_DB_HOST=localhost; go run api/tooling/admin/main.go seed
+	export SCRUMDINGER_DB_HOST=localhost; go run api/tooling/admin/main.go seed
 
 pgcli:
 	pgcli postgresql://postgres:postgres@localhost
@@ -357,7 +357,7 @@ readiness:
 	curl -il http://localhost:3000/v1/readiness
 
 token-gen:
-	export SALES_DB_HOST=localhost; go run api/tooling/admin/main.go gentoken 5cf37266-3473-4006-984f-9325122678b7 54bb2165-71e1-41a6-af3e-7da4a0e1e2c1
+	export SCRUMDINGER_DB_HOST=localhost; go run api/tooling/admin/main.go gentoken 5cf37266-3473-4006-984f-9325122678b7 54bb2165-71e1-41a6-af3e-7da4a0e1e2c1
 
 # ==============================================================================
 # Metrics and Tracing
@@ -455,10 +455,10 @@ list:
 # Class Stuff
 
 run:
-	go run api/services/sales/main.go | go run api/tooling/logfmt/main.go
+	go run api/services/scrumdinger/main.go | go run api/tooling/logfmt/main.go
 
 run-help:
-	go run api/services/sales/main.go --help | go run api/tooling/logfmt/main.go
+	go run api/services/scrumdinger/main.go --help | go run api/tooling/logfmt/main.go
 
 curl:
 	curl -il http://localhost:3000/v1/hack
@@ -502,8 +502,8 @@ talk-apply:
 	kustomize build zarf/k8s/dev/database | kubectl apply -f -
 	kubectl rollout status --namespace=$(NAMESPACE) --watch --timeout=120s sts/database
 
-	kustomize build zarf/k8s/dev/sales | kubectl apply -f -
-	kubectl wait pods --namespace=$(NAMESPACE) --selector app=$(SALES_APP) --timeout=120s --for=condition=Ready
+	kustomize build zarf/k8s/dev/scrumdinger | kubectl apply -f -
+	kubectl wait pods --namespace=$(NAMESPACE) --selector app=$(SCRUMDINGER_APP) --timeout=120s --for=condition=Ready
 
 talk-build: all dev-load talk-apply
 
@@ -511,16 +511,16 @@ talk-load:
 	hey -m GET -c 10 -n 1000 -H "Authorization: Bearer ${TOKEN}" "http://localhost:3000/v1/users?page=1&rows=2"
 
 talk-logs:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) --all-containers=true -f --tail=100 --max-log-requests=6
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP) --all-containers=true -f --tail=100 --max-log-requests=6
 
 talk-logs-cpu:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | grep SCHED
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | grep SCHED
 
 talk-logs-mem:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | grep "ms clock"
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | grep "ms clock"
 
 talk-describe:
-	kubectl describe pod --namespace=$(NAMESPACE) -l app=$(SALES_APP)
+	kubectl describe pod --namespace=$(NAMESPACE) -l app=$(SCRUMDINGER_APP)
 
 talk-metrics:
 	expvarmon -ports="localhost:4000" -vars="build,requests,goroutines,errors,panics,mem:memstats.HeapAlloc,mem:memstats.HeapSys,mem:memstats.Sys"
@@ -558,7 +558,7 @@ help:
 	@echo "  dev-brew                Install brew dependencies"
 	@echo "  dev-docker              Pull Docker images"
 	@echo "  build                   Build all the containers"
-	@echo "  sales                   Build the sales container"
+	@echo "  scrumdinger                   Build the scrumdinger container"
 	@echo "  metrics                 Build the metrics container"
 	@echo "  auth                    Build the auth container"
 	@echo "  dev-up                  Start the KIND cluster"
@@ -570,12 +570,12 @@ help:
 	@echo "  dev-restart             Restart the deployments"
 	@echo "  dev-update              Build, load, and restart the deployments"
 	@echo "  dev-update-apply        Build, load, and apply the deployments"
-	@echo "  dev-logs                Show the logs for the sales service"
+	@echo "  dev-logs                Show the logs for the scrumdinger service"
 	@echo "  dev-logs-auth           Show the logs for the auth service"
 	@echo "  dev-logs-init           Show the logs for the init container"
 	@echo "  dev-describe-node       Show the node details"
 	@echo "  dev-describe-deployment Show the deployment details"
-	@echo "  dev-describe-sales      Show the sales pod details"
+	@echo "  dev-describe-scrumdinger      Show the scrumdinger pod details"
 	@echo "  dev-describe-auth       Show the auth pod details"
 	@echo "  dev-describe-database   Show the database pod details"
 	@echo "  dev-describe-grafana    Show the grafana pod details"
