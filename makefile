@@ -121,9 +121,9 @@ PROMTAIL        := grafana/promtail:3.2.0
 
 KIND_CLUSTER    := ardan-starter-cluster
 NAMESPACE       := sales-system
-SALES_APP       := sales
+SALES_APP       := scrumdinger
 AUTH_APP        := auth
-BASE_IMAGE_NAME := localhost/ardanlabs
+BASE_IMAGE_NAME := localhost/angrieralien
 VERSION         := 0.0.1
 SALES_IMAGE     := $(BASE_IMAGE_NAME)/$(SALES_APP):$(VERSION)
 METRICS_IMAGE   := $(BASE_IMAGE_NAME)/metrics:$(VERSION)
