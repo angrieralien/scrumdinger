@@ -20,11 +20,6 @@ func (s *Store) applyFilter(filter scrumbus.QueryFilter, data map[string]any, bu
 		wc = append(wc, "user_id = :user_id")
 	}
 
-	if filter.Type != nil {
-		data["type"] = filter.Type.String()
-		wc = append(wc, "type = :type")
-	}
-
 	if filter.StartCreatedDate != nil {
 		data["start_date_created"] = filter.StartCreatedDate.UTC()
 		wc = append(wc, "date_created >= :start_date_created")

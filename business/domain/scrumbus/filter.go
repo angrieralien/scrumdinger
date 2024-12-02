@@ -3,7 +3,6 @@ package scrumbus
 import (
 	"time"
 
-	"github.com/angrieralien/scrumdinger/business/types/scrumtype"
 	"github.com/google/uuid"
 )
 
@@ -13,7 +12,6 @@ type QueryFilter struct {
 	ID               *uuid.UUID
 	UserID           *uuid.UUID
 	Name             *string
-	Type             *scrumtype.ScrumType
 	StartCreatedDate *time.Time
 	EndCreatedDate   *time.Time
 }
