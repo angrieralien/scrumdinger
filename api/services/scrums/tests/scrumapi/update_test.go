@@ -21,13 +21,19 @@ func update200(sd apitest.SeedData) []apitest.Table {
 			Method:     http.MethodPut,
 			StatusCode: http.StatusOK,
 			Input: &scrumapp.UpdateScrum{
-				Name: dbtest.StringPointer("App 1"),
+				Name:      dbtest.StringPointer("App 1"),
+				Time:      dbtest.IntPointer(10),
+				Color:     dbtest.StringPointer("navy"),
+				Attendees: []string{"stephen", "luke"},
 			},
 			GotResp: &scrumapp.Scrum{},
 			ExpResp: &scrumapp.Scrum{
 				ID:          sd.Users[0].Scrums[0].ID.String(),
 				UserID:      sd.Users[0].ID.String(),
 				Name:        "App 1",
+				Time:        10,
+				Color:       "navy",
+				Attendees:   []string{"stephen", "luke"},
 				DateCreated: sd.Users[0].Scrums[0].DateCreated.Format(time.RFC3339),
 				DateUpdated: sd.Users[0].Scrums[0].DateCreated.Format(time.RFC3339),
 			},
@@ -41,43 +47,6 @@ func update200(sd apitest.SeedData) []apitest.Table {
 				gotResp.DateUpdated = expResp.DateUpdated
 
 				return cmp.Diff(gotResp, expResp)
-			},
-		},
-	}
-
-	return table
-}
-
-func update400(sd apitest.SeedData) []apitest.Table {
-	table := []apitest.Table{
-		{
-			Name:       "bad-input",
-			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[0].ID),
-			Token:      sd.Users[0].Token,
-			Method:     http.MethodPut,
-			StatusCode: http.StatusBadRequest,
-			Input: &scrumapp.UpdateScrum{
-				Time: dbtest.IntPointer(5),
-			},
-			GotResp: &errs.Error{},
-			ExpResp: errs.Newf(errs.InvalidArgument, "validate: [{\"field\":\"address1\",\"error\":\"address1 must be at least 1 character in length\"},{\"field\":\"zipCode\",\"error\":\"zipCode must be a valid numeric value\"},{\"field\":\"state\",\"error\":\"state must be at least 1 character in length\"},{\"field\":\"country\",\"error\":\"Key: 'UpdateScrum.address.country' Error:Field validation for 'country' failed on the 'iso3166_1_alpha2' tag\"}]"),
-			CmpFunc: func(got any, exp any) string {
-				return cmp.Diff(got, exp)
-			},
-		},
-		{
-			Name:       "bad-type",
-			URL:        fmt.Sprintf("/v1/scrums/%s", sd.Users[0].Scrums[0].ID),
-			Token:      sd.Users[0].Token,
-			Method:     http.MethodPut,
-			StatusCode: http.StatusBadRequest,
-			Input: &scrumapp.UpdateScrum{
-				Name: dbtest.StringPointer("TEST"),
-			},
-			GotResp: &errs.Error{},
-			ExpResp: errs.Newf(errs.InvalidArgument, "parse: invalid scrum type \"BAD TYPE\""),
-			CmpFunc: func(got any, exp any) string {
-				return cmp.Diff(got, exp)
 			},
 		},
 	}

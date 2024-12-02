@@ -119,6 +119,22 @@ func (b *Business) Update(ctx context.Context, hme Scrum, uh UpdateScrum) (Scrum
 
 	hme.DateUpdated = time.Now()
 
+	if uh.Name != nil {
+		hme.Name = *uh.Name
+	}
+
+	if uh.Time != nil {
+		hme.Time = *uh.Time
+	}
+
+	if uh.Color != nil {
+		hme.Color = *uh.Color
+	}
+
+	if uh.Attendees != nil {
+		hme.Attendees = uh.Attendees
+	}
+
 	if err := b.storer.Update(ctx, hme); err != nil {
 		return Scrum{}, fmt.Errorf("update: %w", err)
 	}

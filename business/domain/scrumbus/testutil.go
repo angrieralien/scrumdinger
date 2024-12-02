@@ -46,15 +46,3 @@ func TestGenerateSeedScrums(ctx context.Context, n int, api *Business, userID uu
 
 	return scrums, nil
 }
-
-// ParseAddress is a helper function to create an address value.
-func ParseAddress(address1 string, address2 string, zipCode string, city string, state string, country string) Address {
-	return Address{
-		Address1: address1,
-		Address2: address2,
-		ZipCode:  zipCode,
-		City:     city,
-		State:    state,
-		Country:  country,
-	}
-}
