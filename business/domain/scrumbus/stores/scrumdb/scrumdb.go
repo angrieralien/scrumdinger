@@ -94,7 +94,7 @@ func (s *Store) Update(ctx context.Context, scrum scrumbus.Scrum) error {
 		"attendees"		= :attendees,
         "date_updated"  = :date_updated
     WHERE
-        scrum_id = :scrum_id`
+        scrum_id = :scrum_id  and user_id = :user_id`
 
 	if err := sqldb.NamedExecContext(ctx, s.log, s.db, q, toDBScrum(scrum)); err != nil {
 		return fmt.Errorf("namedexeccontext: %w", err)

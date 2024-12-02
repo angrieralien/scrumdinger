@@ -407,6 +407,10 @@ token:
 
 # export TOKEN="COPY TOKEN STRING FROM LAST CALL"
 
+scrums:
+	curl -il \
+	-H "Authorization: Bearer ${TOKEN}" "http://localhost:3000/v1/scrums?page=1&rows=2"
+
 users:
 	curl -il \
 	-H "Authorization: Bearer ${TOKEN}" "http://localhost:3000/v1/users?page=1&rows=2"

@@ -37,6 +37,7 @@
 	});
 
 	function copyScrum(src: ScrumMeeting, dst: ScrumMeeting) {
+		dst.id = src.id;
 		dst.attendees.length = 0;
 		src.attendees.forEach((a) => {
 			dst.attendees.push(a);
@@ -48,8 +49,15 @@
 	}
 
 	function deleteMeeting() {
-		scrums.meetings.splice(editIdx, 1);
-		drawerStore.close();
+		if (user.isLoggedIn) {
+			scrumAPI.DELETE(scrum.id).then(() => {
+				scrums.meetings.splice(editIdx, 1);
+				drawerStore.close();
+			});
+		} else {
+			scrums.meetings.splice(editIdx, 1);
+			drawerStore.close();
+		}
 	}
 
 	function updateLocalScrums() {
@@ -62,13 +70,21 @@
 
 	function submit() {
 		if (user.isLoggedIn) {
-			scrumAPI.POST(scrum.toJson()).then((data) => {
-				updateLocalScrums();
-				drawerStore.close();
-			});
+			if (state === 'edit') {
+				scrumAPI.PUT(scrum.toJson(), scrum.id).then((data) => {
+					scrum.fromJSON(data);
+					updateLocalScrums();
+					drawerStore.close();
+				});
+			} else {
+				scrumAPI.POST(scrum.toJson()).then((data) => {
+					scrum.fromJSON(data);
+					updateLocalScrums();
+					drawerStore.close();
+				});
+			}
 		} else {
 			updateLocalScrums();
-
 			drawerStore.close();
 		}
 	}

@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { getScrumContext, ScrumMeeting } from '$lib/models/scrum.svelte';
+	import {
+		APIScrumMeetings,
+		getScrumContext,
+		ScrumMeeting,
+		toAppScrumMeetings
+	} from '$lib/models/scrum.svelte';
 	import { getUserContext, User } from '$lib/models/user.svelte';
 	import {
 		getDrawerStore,
@@ -25,9 +30,10 @@
 		user = getUserContext();
 		drawerStore = getDrawerStore();
 		drawerMeta = getDrawerContext();
-
-		scrumAPI.GET().then((data) => {
-			console.log(data);
+		let scrums = [];
+		scrumAPI.GET().then((data: APIScrumMeetings) => {
+			let meetings = toAppScrumMeetings(data.items);
+			scrum.meetings = meetings;
 		});
 	});
 
@@ -94,6 +100,7 @@
 						<span class="flex-auto">
 							<dt>{s.name}</dt>
 							<dd>{s.time} minutes</dd>
+							<dd>{s.id}</dd>
 						</span>
 						<span class="full"></span>
 						<button
