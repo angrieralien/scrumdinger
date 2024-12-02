@@ -6,8 +6,7 @@ import (
 	"errors"
 
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/sdk/sqldb"
 	"github.com/angrieralien/scrumdinger/foundation/web"
@@ -32,7 +31,7 @@ const (
 	userIDKey
 	userKey
 	productKey
-	homeKey
+	scrumKey
 	trKey
 )
 
@@ -77,29 +76,15 @@ func GetUser(ctx context.Context) (userbus.User, error) {
 	return v, nil
 }
 
-func setProduct(ctx context.Context, prd productbus.Product) context.Context {
-	return context.WithValue(ctx, productKey, prd)
+func setScrum(ctx context.Context, scrum scrumbus.Scrum) context.Context {
+	return context.WithValue(ctx, scrumKey, scrum)
 }
 
-// GetProduct returns the product from the context.
-func GetProduct(ctx context.Context) (productbus.Product, error) {
-	v, ok := ctx.Value(productKey).(productbus.Product)
+// GetScrum returns the scrum from the context.
+func GetScrum(ctx context.Context) (scrumbus.Scrum, error) {
+	v, ok := ctx.Value(scrumKey).(scrumbus.Scrum)
 	if !ok {
-		return productbus.Product{}, errors.New("product not found in context")
-	}
-
-	return v, nil
-}
-
-func setHome(ctx context.Context, hme homebus.Home) context.Context {
-	return context.WithValue(ctx, homeKey, hme)
-}
-
-// GetHome returns the home from the context.
-func GetHome(ctx context.Context) (homebus.Home, error) {
-	v, ok := ctx.Value(homeKey).(homebus.Home)
-	if !ok {
-		return homebus.Home{}, errors.New("home not found in context")
+		return scrumbus.Scrum{}, errors.New("scrum not found in context")
 	}
 
 	return v, nil

@@ -3,16 +3,14 @@ package unitest
 import (
 	"context"
 
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 )
 
 // User represents an app user specified for the test.
 type User struct {
 	userbus.User
-	Products []productbus.Product
-	Homes    []homebus.Home
+	Scrums []scrumbus.Scrum
 }
 
 // SeedData represents data that was seeded for the test.

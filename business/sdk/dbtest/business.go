@@ -3,15 +3,13 @@ package dbtest
 import (
 	"time"
 
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
-	"github.com/angrieralien/scrumdinger/business/domain/homebus/stores/homedb"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus/stores/productdb"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus/stores/scrumdb"
+
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/usercache"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus/stores/userdb"
-	"github.com/angrieralien/scrumdinger/business/domain/vproductbus"
-	"github.com/angrieralien/scrumdinger/business/domain/vproductbus/stores/vproductdb"
+
 	"github.com/angrieralien/scrumdinger/business/sdk/delegate"
 	"github.com/angrieralien/scrumdinger/foundation/logger"
 	"github.com/jmoiron/sqlx"
@@ -20,24 +18,18 @@ import (
 // BusDomain represents all the business domain apis needed for testing.
 type BusDomain struct {
 	Delegate *delegate.Delegate
-	Home     *homebus.Business
-	Product  *productbus.Business
+	Scrum    *scrumbus.Business
 	User     *userbus.Business
-	VProduct *vproductbus.Business
 }
 
 func newBusDomains(log *logger.Logger, db *sqlx.DB) BusDomain {
 	delegate := delegate.New(log)
 	userBus := userbus.NewBusiness(log, delegate, usercache.NewStore(log, userdb.NewStore(log, db), time.Hour))
-	productBus := productbus.NewBusiness(log, userBus, delegate, productdb.NewStore(log, db))
-	homeBus := homebus.NewBusiness(log, userBus, delegate, homedb.NewStore(log, db))
-	vproductBus := vproductbus.NewBusiness(vproductdb.NewStore(log, db))
+	scrumBus := scrumbus.NewBusiness(log, userBus, delegate, scrumdb.NewStore(log, db))
 
 	return BusDomain{
 		Delegate: delegate,
-		Home:     homeBus,
-		Product:  productBus,
+		Scrum:    scrumBus,
 		User:     userBus,
-		VProduct: vproductBus,
 	}
 }

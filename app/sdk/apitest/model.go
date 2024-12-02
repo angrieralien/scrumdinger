@@ -1,17 +1,15 @@
 package apitest
 
 import (
-	"github.com/angrieralien/scrumdinger/business/domain/homebus"
-	"github.com/angrieralien/scrumdinger/business/domain/productbus"
+	"github.com/angrieralien/scrumdinger/business/domain/scrumbus"
 	"github.com/angrieralien/scrumdinger/business/domain/userbus"
 )
 
 // User extends the dbtest user for api test support.
 type User struct {
 	userbus.User
-	Products []productbus.Product
-	Homes    []homebus.Home
-	Token    string
+	Scrums []scrumbus.Scrum
+	Token  string
 }
 
 // SeedData represents users for api tests.

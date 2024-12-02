@@ -49,8 +49,8 @@ func WithFileServer(react bool, static embed.FS, dir string, path string) func(o
 	}
 }
 
-// SalesConfig contains sales service specific config.
-type SalesConfig struct {
+// ScrumdingerConfig contains sales service specific config.
+type ScrumdingerConfig struct {
 	AuthClient *authclient.Client
 }
 
@@ -65,7 +65,7 @@ type Config struct {
 	Log    *logger.Logger
 	DB     *sqlx.DB
 	Tracer trace.Tracer
-	SalesConfig
+	ScrumdingerConfig
 	AuthConfig
 }
 
