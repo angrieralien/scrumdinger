@@ -50,6 +50,7 @@
 		}
 	});
 
+	playDing();
 	let isPaused = $state(false);
 	let isResetting = $state(false);
 	const duration = 1000;
@@ -101,12 +102,10 @@
 	function handleSkip() {
 		clearInterval(interval);
 		attendeesRemaining = attendeesRemaining - 1;
-		playDing();
-		if (attendeesRemaining < 1) {
-			setTimeout(() => {
-				done();
-			}, 2000);
 
+		if (attendeesRemaining < 1) {
+			playDing();
+			setTimeout(done, 2000);
 			return;
 		}
 
@@ -115,6 +114,7 @@
 		interval = setInterval(updateTimer, 1000);
 		offset.set(Math.max(count - 1, 0) / attendeeCountdown);
 		rotation.set((Math.max(count - 1, 0) / attendeeCountdown) * 360);
+		playDing();
 	}
 
 	function padValue(value: any, length = 2, char = '0') {
@@ -129,7 +129,7 @@
 </script>
 
 <div class="grid grid-cols-1 p-2">
-	<div class="col-span-1">
+	<div class="col-span-1 max-w-[500px]">
 		<div class="flex flex-col items-center">
 			<svg class="mx-auto" width="100%" height="10">
 				<!-- Background track -->

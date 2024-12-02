@@ -45,6 +45,7 @@ type NewScrum struct {
 // we do not want to use pointers to basic types but we make exception around
 // marshalling/unmarshalling.
 type UpdateScrum struct {
+	UserID    *string
 	Name      *string
 	Time      *int
 	Color     *string

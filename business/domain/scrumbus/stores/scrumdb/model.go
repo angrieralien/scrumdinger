@@ -23,6 +23,7 @@ type scrum struct {
 }
 
 func toDBScrum(bus scrumbus.Scrum) scrum {
+
 	db := scrum{
 		ID:     bus.ID,
 		UserID: bus.UserID,
@@ -40,12 +41,17 @@ func toDBScrum(bus scrumbus.Scrum) scrum {
 }
 
 func toBusScrum(db scrum) (scrumbus.Scrum, error) {
+	attendees := []string{}
+	if len(db.Attendees) > 0 {
+		attendees = strings.Split(db.Attendees, "\t")
+	}
+
 	bus := scrumbus.Scrum{
 		ID:        db.ID,
 		Name:      db.Name,
 		Time:      db.Time,
 		Color:     db.Color,
-		Attendees: strings.Split(db.Attendees, "\t"),
+		Attendees: attendees,
 		UserID:    db.UserID,
 
 		DateCreated: db.DateCreated.In(time.Local),

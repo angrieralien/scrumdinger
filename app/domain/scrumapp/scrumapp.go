@@ -116,6 +116,37 @@ func (a *app) queryByID(ctx context.Context, _ *http.Request) web.Encoder {
 	if err != nil {
 		return errs.Newf(errs.Internal, "querybyid: %s", err)
 	}
-
 	return toAppScrum(scrum)
+}
+
+func (a *app) queryByUserID(ctx context.Context, r *http.Request) web.Encoder {
+	qp := parseQueryParams(r)
+
+	page, err := page.Parse(qp.Page, qp.Rows)
+	if err != nil {
+		return errs.NewFieldsError("page", err)
+	}
+
+	filter, err := parseFilter(qp)
+	if err != nil {
+		return err.(errs.FieldErrors)
+	}
+
+	userID, err := mid.GetUserID(ctx)
+	if err != nil {
+		return errs.Newf(errs.Internal, "user missing in context: %s", err)
+	}
+
+	scrums, err := a.scrumBus.QueryByUserID(ctx, userID)
+
+	if err != nil {
+		return errs.Newf(errs.Internal, "query: %s", err)
+	}
+
+	total, err := a.scrumBus.Count(ctx, filter)
+	if err != nil {
+		return errs.Newf(errs.Internal, "count: %s", err)
+	}
+
+	return query.NewResult(toAppScrums(scrums), total, page)
 }
