@@ -104,7 +104,7 @@
 		{#if state === 'edit'}
 			<span class="grow"></span>
 
-			<Trash2 onclick={deleteMeeting} />
+			<Trash2 class="cursor-pointer" onclick={deleteMeeting} />
 		{/if}
 	</div>
 	<form onsubmit={submit}>
