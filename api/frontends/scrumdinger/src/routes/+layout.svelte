@@ -36,7 +36,8 @@
 
 	let user = new User();
 	setUserContext(user);
-	setScrumContext(new Scrum());
+	let scrum = new Scrum();
+	setScrumContext(scrum);
 	let drawerMeta = new DrawerMeta();
 	setDrawerContext(drawerMeta);
 
@@ -52,6 +53,8 @@
 	function signout() {
 		localStorage.removeItem('token');
 		user.isLoggedIn = false;
+		scrum.meetings.length = 0;
+		isOpen = false;
 		goto('/');
 	}
 </script>
