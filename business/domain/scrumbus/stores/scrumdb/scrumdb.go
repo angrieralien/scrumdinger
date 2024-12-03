@@ -204,7 +204,9 @@ func (s *Store) QueryByUserID(ctx context.Context, userID uuid.UUID) ([]scrumbus
 	FROM
 		scrums
 	WHERE
-		user_id = :user_id`
+		user_id = :user_id
+	ORDER BY 
+	    date_created`
 
 	var dbHmes []scrum
 	if err := sqldb.NamedQuerySlice(ctx, s.log, s.db, q, data, &dbHmes); err != nil {

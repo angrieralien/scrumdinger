@@ -30,11 +30,12 @@
 		user = getUserContext();
 		drawerStore = getDrawerStore();
 		drawerMeta = getDrawerContext();
-		let scrums = [];
-		scrumAPI.GET().then((data: APIScrumMeetings) => {
-			let meetings = toAppScrumMeetings(data.items);
-			scrum.meetings = meetings;
-		});
+		if (user.isLoggedIn) {
+			scrumAPI.GET().then((data: APIScrumMeetings) => {
+				let meetings = toAppScrumMeetings(data.items);
+				scrum.meetings = meetings;
+			});
+		}
 	});
 
 	// contexts

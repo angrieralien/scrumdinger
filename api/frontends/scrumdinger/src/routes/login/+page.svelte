@@ -5,12 +5,15 @@
 	import { onMount } from 'svelte';
 	import { getUserContext, User } from '$lib/models/user.svelte';
 	import { goto } from '$app/navigation';
+	import { getScrumContext, ScrumMeeting } from '$lib/models/scrum.svelte';
+	import { scrumAPI } from '$lib/api/scrumapi';
 
 	const toastStore = getToastStore();
 
 	let user: User;
-	let email: string = $state('admin@example.com');
-	let password: string = $state('gophers');
+	let scrum = getScrumContext();
+	let email: string = $state('');
+	let password: string = $state('');
 	let t: ToastSettings = {
 		message: '',
 		timeout: 10000
@@ -19,6 +22,41 @@
 	onMount(() => {
 		user = getUserContext();
 	});
+
+	/**
+	 * Save single meeting, update meeting id, and route to home if it
+	 * is the last meeting.
+	 * @param meeting ScrumMeeting to save
+	 * @param idx index of the meeting stored in scrum.meetings
+	 */
+	function saveMeeting(meeting: ScrumMeeting, idx: number) {
+		scrumAPI
+			.POST(meeting.toJson())
+			.then((data) => {
+				meeting.fromJSON(data);
+			})
+			.finally(() => {
+				if (idx === scrum.meetings.length - 1) {
+					goto('/');
+				}
+			});
+	}
+
+	/**
+	 * saveMeetings saves meetings if a meeting was created
+	 * prior to the user logging in.
+	 */
+	function saveMeetings() {
+		scrum.meetings.reverse().forEach((meeting, idx) => {
+			if (meeting.id.length === 0) {
+				saveMeeting(meeting, idx)
+			}
+		});
+
+		if (scrum.meetings.length === 0) {
+			goto('/');
+		}
+	}
 
 	/**
 	 * submit sends login request to User api.
@@ -30,7 +68,7 @@
 				let token = data['token'];
 				localStorage.setItem('token', token);
 				user.isLoggedIn = true;
-				goto('/');
+				saveMeetings();
 			})
 			.catch((reason: any) => {
 				t.message = reason['message'];
