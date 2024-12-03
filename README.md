@@ -1,5 +1,13 @@
-🔥 Helps teams manage their daily scrums.
+<p align="center">
+  🔥 Helps teams manage their daily scrums.
+</p>
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/34eb52fc-701f-4a1e-8f18-2b1d788ae323"  width="20%" />
+  <img src="https://github.com/user-attachments/assets/a1ad5868-7b72-48c0-ac5c-ece4a8de2d9e" width="20%"/>
+  <img src="https://github.com/user-attachments/assets/18d54f6d-7507-4fa2-86fb-44a9ea2d8158" width="20%" />
+</p>
+  
 ## Table of Contents
 - [📼 Demo](#-demo)
 - [🔔 About](#-about)
@@ -10,12 +18,11 @@
     - [Docker](#docker)
     - [Go](#go)
     - [Node](#node)
-- [🔬 Environments](#-environments)
+- [🔬 Enironments](#-environments)
   - [Development](#development)
  
 # 📼 Demo
 [scrumdinger_demo.webm](https://github.com/user-attachments/assets/6b71085c-b8da-4ea9-a622-82dd212a181e)
-
 
 # 🔔 About
 
