@@ -99,27 +99,6 @@
 						>
 							{#if user.isLoggedIn}
 								<div class="py-1" role="none">
-									<a
-										href="#"
-										class="block px-4 py-2 text-sm text-gray-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-0">Account settings</a
-									>
-									<a
-										href="#"
-										class="block px-4 py-2 text-sm text-gray-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-1">Support</a
-									>
-									<a
-										href="#"
-										class="block px-4 py-2 text-sm text-gray-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-2">License</a
-									>
 									<form method="POST" onsubmit={signout} role="none">
 										<button
 											type="submit"
