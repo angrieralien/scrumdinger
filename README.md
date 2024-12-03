@@ -11,6 +11,10 @@
     - [Node](#node)
 - [🔬 Environments](#-environments)
   - [Development](#development)
+ 
+# Video
+[scrumdinger_demo.webm](https://github.com/user-attachments/assets/6b71085c-b8da-4ea9-a622-82dd212a181e)
+
 
 # 🔔 About
 
