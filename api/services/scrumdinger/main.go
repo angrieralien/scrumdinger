@@ -29,7 +29,7 @@ import (
 	Need to figure out timeouts for http service.
 */
 
-//go:embed static
+//go:embed all:static
 var static embed.FS
 
 var build = "develop"
@@ -82,7 +82,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 			CORSAllowedOrigins []string      `conf:"default:*"`
 		}
 		Auth struct {
-			Host string `conf:"default:http://auth-service:6000"`
+			Host string `conf:"default:http://auth-service:6001"`
 		}
 		DB struct {
 			User         string `conf:"default:postgres"`

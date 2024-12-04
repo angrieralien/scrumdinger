@@ -12,7 +12,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ardanlabs/conf/v3"
 	"github.com/angrieralien/scrumdinger/api/services/auth/build/all"
 	"github.com/angrieralien/scrumdinger/app/sdk/auth"
 	"github.com/angrieralien/scrumdinger/app/sdk/debug"
@@ -21,6 +20,7 @@ import (
 	"github.com/angrieralien/scrumdinger/foundation/keystore"
 	"github.com/angrieralien/scrumdinger/foundation/logger"
 	"github.com/angrieralien/scrumdinger/foundation/otel"
+	"github.com/ardanlabs/conf/v3"
 )
 
 var build = "develop"
@@ -67,7 +67,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 			WriteTimeout       time.Duration `conf:"default:10s"`
 			IdleTimeout        time.Duration `conf:"default:120s"`
 			ShutdownTimeout    time.Duration `conf:"default:20s"`
-			APIHost            string        `conf:"default:0.0.0.0:6000"`
+			APIHost            string        `conf:"default:0.0.0.0:6001"`
 			DebugHost          string        `conf:"default:0.0.0.0:6010"`
 			CORSAllowedOrigins []string      `conf:"default:*"`
 		}
