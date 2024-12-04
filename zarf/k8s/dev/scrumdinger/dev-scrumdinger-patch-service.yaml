@@ -11,9 +11,9 @@ spec:
   - name: scrumdinger
     port: 3000
     targetPort: scrumdinger
-  - name: scrumdinger-debug
+  - name: sd-debug
     port: 3010
-    targetPort: scrumdinger-debug
+    targetPort: sd-debug
   - name: metrics
     port: 4000
     targetPort: metrics

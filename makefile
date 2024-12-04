@@ -119,7 +119,7 @@ TEMPO           := grafana/tempo:2.6.0
 LOKI            := grafana/loki:3.2.0
 PROMTAIL        := grafana/promtail:3.2.0
 
-KIND_CLUSTER    := ardan-starter-cluster
+KIND_CLUSTER    := scrumdinger-cluster
 NAMESPACE       := scrumdinger-system
 SCRUMDINGER_APP       := scrumdinger
 AUTH_APP        := auth

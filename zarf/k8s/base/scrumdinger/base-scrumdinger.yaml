@@ -76,7 +76,7 @@ spec:
         ports:
         - name: scrumdinger
           containerPort: 3000
-        - name: scrumdinger-debug
+        - name: sd-debug
           containerPort: 3010
 
         readinessProbe: # readiness probes mark the service available to accept traffic.
