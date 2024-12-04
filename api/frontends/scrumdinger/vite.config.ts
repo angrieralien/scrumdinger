@@ -10,7 +10,7 @@ export default defineConfig({
 		},
 		proxy: {
 			'/v1/auth/token': {
-				target: 'http://localhost:6000',
+				target: 'http://localhost:6001',
 				changeOrigin: true
 			},
 			'/v1': {

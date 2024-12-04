@@ -1,4 +1,5 @@
-import { PUBLIC_KID } from '$env/static/public';
+import { PUBLIC_KID, PUBLIC_AUTH_URL} from '$env/static/public';
+
 
 let version = 'v1';
 
@@ -14,7 +15,7 @@ class UserApi {
 	 * @returns Promise<string> json
 	 */
 	async login(email: string, password: string) {
-		let response = await fetch('/' + version + '/auth/token/' + PUBLIC_KID, {
+		let response = await fetch(PUBLIC_AUTH_URL + '/' + version + '/auth/token/' + PUBLIC_KID, {
 			method: 'GET',
 			headers: {
 				authorization: 'Basic ' + btoa(email + ':' + password)

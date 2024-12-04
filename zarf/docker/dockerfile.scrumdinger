@@ -1,4 +1,22 @@
-# Build the Go Binary.
+# Use an official Node.js 18 image as the base
+FROM node:23-alpine as build_web_scrumdinger
+
+# Set the working directory to /app
+WORKDIR /app
+
+ENV BASE_PATH=/static
+# Copy the package.json and install dependencies
+COPY api/frontends/scrumdinger/package*.json ./
+RUN npm ci
+
+# Copy the rest of the application code
+COPY api/frontends/scrumdinger .
+
+# Run the SvelteKit build script
+RUN npm run build
+
+
+# # Build the Go Binary.
 FROM golang:1.23 AS build_scrumdinger
 ENV CGO_ENABLED=0
 ARG BUILD_REF
@@ -20,8 +38,9 @@ RUN go build -ldflags "-X main.build=${BUILD_REF}"
 
 # Build the service binary.
 WORKDIR /service/api/services/scrumdinger
-RUN go build -ldflags "-X main.build=${BUILD_REF}"
+COPY --from=build_web_scrumdinger /app/build /service/api/services/scrumdinger/static
 
+RUN go build -ldflags "-X main.build=${BUILD_REF}"
 
 # Run the Go Binary in Alpine.
 FROM alpine:3.20
@@ -31,6 +50,7 @@ RUN addgroup -g 1000 -S scrumdinger && \
     adduser -u 1000 -h /service -G scrumdinger -S scrumdinger
 COPY --from=build_scrumdinger --chown=scrumdinger:scrumdinger /service/api/tooling/admin/admin /service/admin
 COPY --from=build_scrumdinger --chown=scrumdinger:scrumdinger /service/api/services/scrumdinger/scrumdinger /service/scrumdinger
+
 WORKDIR /service
 USER scrumdinger
 CMD ["./scrumdinger"]
