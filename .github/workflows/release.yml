@@ -1,0 +1,104 @@
+name: Create and publish images
+
+on:
+  push:
+    # tags:
+    #   - v**
+    branches: ["SD-19_add-github-workflow-to-build-images"]
+env:
+  REGISTRY: ghcr.io
+  BASE_IMAGE_NAME: ghcr.io/${{ github.repository }}
+  VERSION: ${{ github.ref_name }}-test
+  SCRUMDINGER_APP: scrumdinger
+  AUTH_APP: auth
+
+jobs:
+  # auto-release:
+  #   name: Create Release
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Release
+  #       uses: softprops/action-gh-release@v2
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write # needed for signing the images with GitHub OIDC Token
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+      - name: Extract scrumdinger metadata (tags, labels) for Docker
+        id: scrumdinger-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BASE_IMAGE_NAME }}/${{ env.SCRUMDINGER_APP }}:${{ env.VERSION }}
+
+      - name: Extract auth metadata (tags, labels) for Docker
+        id: auth-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BASE_IMAGE_NAME }}/${{ env.AUTH_APP }}:${{ env.VERSION }}
+
+      - name: Extract metrics metadata (tags, labels) for Docker
+        id: metrics-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BASE_IMAGE_NAME }}/metrics:${{ env.VERSION }}
+
+      - name: Build scrumdinger and push Docker image
+        id: scrumdinger-build-push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          file: ./zarf/docker/dockerfile.scrumdinger
+          tags: ${{ env.BASE_IMAGE_NAME }}/${{ env.SCRUMDINGER_APP }}:${{ env.VERSION }}
+          labels: ${{ steps.scrumdinger-metadata.outputs.labels }}
+          build-args: |
+            BUILD_REF=${{ env.VERSION }}
+            BUILD_DATE=${{ steps.date.outputs.date }}
+            KID=${{ vars.PUBLIC_KID }}
+            AUTH_URL=${{ vars.PUBLIC_AUTH_URL }}
+
+      - name: Build auth and push Docker image
+        id: auth-build-push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          file: ./zarf/docker/dockerfile.auth
+          tags: ${{ env.BASE_IMAGE_NAME }}/${{ env.AUTH_APP }}:${{ env.VERSION }}
+          labels: ${{ steps.auth-metadata.outputs.labels }}
+          build-args: |
+            BUILD_REF=${{ env.VERSION }}
+            BUILD_DATE=${{ steps.date.outputs.date }}
+
+      - name: Build metrics and push Docker image
+        id: metrics-build-push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          file: ./zarf/docker/dockerfile.metrics
+          tags: ${{ env.BASE_IMAGE_NAME }}/metrics:${{ env.VERSION }}
+          labels: ${{ steps.metrics-metadata.outputs.labels }}
+          build-args: |
+            BUILD_REF=${{ env.VERSION }}
+            BUILD_DATE=${{ steps.date.outputs.date }}

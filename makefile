@@ -109,25 +109,28 @@ SHELL = $(if $(wildcard $(SHELL_PATH)),/bin/ash,/bin/bash)
 # ==============================================================================
 # Define dependencies
 
-GOLANG          := golang:1.23
-ALPINE          := alpine:3.20
-KIND            := kindest/node:v1.31.2
-POSTGRES        := postgres:17.2
-GRAFANA         := grafana/grafana:11.3.0
-PROMETHEUS      := prom/prometheus:v2.55.0
-TEMPO           := grafana/tempo:2.6.0
-LOKI            := grafana/loki:3.2.0
-PROMTAIL        := grafana/promtail:3.2.0
+GOLANG          	:= golang:1.23
+ALPINE          	:= alpine:3.20
+KIND            	:= kindest/node:v1.31.2
+POSTGRES        	:= postgres:17.2
+GRAFANA         	:= grafana/grafana:11.3.0
+PROMETHEUS      	:= prom/prometheus:v2.55.0
+TEMPO           	:= grafana/tempo:2.6.0
+LOKI            	:= grafana/loki:3.2.0
+PROMTAIL        	:= grafana/promtail:3.2.0
 
-KIND_CLUSTER    := scrumdinger-cluster
-NAMESPACE       := scrumdinger-system
-SCRUMDINGER_APP       := scrumdinger
-AUTH_APP        := auth
-BASE_IMAGE_NAME := localhost/angrieralien
-VERSION         := 0.0.1
-SCRUMDINGER_IMAGE     := $(BASE_IMAGE_NAME)/$(SCRUMDINGER_APP):$(VERSION)
-METRICS_IMAGE   := $(BASE_IMAGE_NAME)/metrics:$(VERSION)
-AUTH_IMAGE      := $(BASE_IMAGE_NAME)/$(AUTH_APP):$(VERSION)
+KIND_CLUSTER    	:= scrumdinger-cluster
+NAMESPACE       	:= scrumdinger-system
+SCRUMDINGER_APP 	:= scrumdinger
+AUTH_APP        	:= auth
+BASE_IMAGE_NAME 	:= localhost/angrieralien
+VERSION         	:= 0.0.1
+SCRUMDINGER_IMAGE   := $(BASE_IMAGE_NAME)/$(SCRUMDINGER_APP):$(VERSION)
+METRICS_IMAGE   	:= $(BASE_IMAGE_NAME)/metrics:$(VERSION)
+AUTH_IMAGE      	:= $(BASE_IMAGE_NAME)/$(AUTH_APP):$(VERSION)
+
+KID					:= 54bb2165-71e1-41a6-af3e-7da4a0e1e2c1
+AUTH_URL			:= "http://localhost:6001"
 
 # VERSION       := "0.0.1-$(shell git rev-parse --short HEAD)"
 
@@ -172,6 +175,8 @@ scrumdinger:
 		-t $(SCRUMDINGER_IMAGE) \
 		--build-arg BUILD_REF=$(VERSION) \
 		--build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+		--build-arg KID=$(KID) \
+		--build-arg AUTH_URL=$(AUTH_URL) \
 		.
 
 metrics:

@@ -11,3 +11,6 @@ LICENSE
 makefile
 README.md
 !zarf/compose/database-data
+
+.env
+.env.local
