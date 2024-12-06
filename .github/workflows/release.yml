@@ -2,9 +2,9 @@ name: Create and publish images
 
 on:
   push:
-    # tags:
-    #   - v**
-    branches: ["SD-19_add-github-workflow-to-build-images"]
+    tags:
+      - v**
+    
 env:
   REGISTRY: ghcr.io
   BASE_IMAGE_NAME: ghcr.io/${{ github.repository }}
@@ -13,17 +13,17 @@ env:
   AUTH_APP: auth
 
 jobs:
-  # auto-release:
-  #   name: Create Release
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  auto-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Release
-  #       uses: softprops/action-gh-release@v2
+      - name: Release
+        uses: softprops/action-gh-release@v2
 
   build-and-push-image:
     runs-on: ubuntu-latest
